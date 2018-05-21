@@ -1,15 +1,14 @@
 package com.happytrees.fulltankparsing;
 
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happytrees.fulltankparsing.Adapter.MyAdapter;
@@ -27,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 
 //HOVOT :
@@ -35,28 +33,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public String line;
-    public BufferedReader br;
-    public URL url;
-    public InputStream is = null;
-    public Element divEl;
+    private final static String START_STRING = " https://www.fulltank.co.il/?s= ";
+    private final static String END_STRING = "&latitude=undefined&longitude=undefined";
     public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
-    public String city;
     public EditText cityET;
-    public String startString = " https://www.fulltank.co.il/?s= ";
-    public String endString = "&latitude=undefined&longitude=undefined";
-    public String fullUrl;
     public Button goBtn;
-    public String cityImproved;
     public ProgressDialog progressDialog;
-    public String name;
-    public String price;
-    public String urlImg;
-    ArrayList<String> names = new ArrayList<>();
-    ArrayList<String> prices = new ArrayList<>();
-    ArrayList<String> urlImgs = new ArrayList<>();
-    public String newLine;
 
 
     //creating object Station and assigning its string variable value as myElement.ownText()
@@ -70,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        goBtn = (Button) findViewById(R.id.GoButton);
-        cityET = (EditText) findViewById(R.id.cityET);
+        goBtn = findViewById(R.id.GoButton);
+        cityET = findViewById(R.id.cityET);
 
 
 //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 
-        myRecycler = (RecyclerView) findViewById(R.id.MyRecyclerView);
+        myRecycler = findViewById(R.id.MyRecyclerView);
         myRecycler.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -89,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 
+        final MyAdapter myAdapter = new MyAdapter(allStations, MainActivity.this);
+        myRecycler.setAdapter(myAdapter);
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,16 +83,18 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            city = cityET.getText().toString();
-                            cityImproved = city.replace(" ", "%20");
-                            fullUrl = startString + cityImproved + endString;
+                            String city = cityET.getText().toString();
+                            String cityImproved = city.replace(" ", "%20");
+                            String fullUrl = START_STRING + cityImproved + END_STRING;
+
                             //downloading html and keeping it under "line" variable
+                            InputStream is = null;
                             try {
-                                url = new URL(fullUrl);
+                                URL url = new URL(fullUrl);
                                 is = url.openStream();  // throws an IOException
-                                br = new BufferedReader(new InputStreamReader(is));
+                                BufferedReader br = new BufferedReader(new InputStreamReader(is));
                                 String currentLine;
-                                line = " ";
+                                String line = " ";
                                 //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
                                 while ((currentLine = br.readLine()) != null) {
                                     line += currentLine;
@@ -117,9 +104,10 @@ public class MainActivity extends AppCompatActivity {
                                 //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
                                 //NAMES
                                 Elements myElements = parsedDocument.select("h2 > a");
+                                ArrayList<String> names = new ArrayList<>();
                                 for (Element myElement : myElements) {
                                     //getting station's name
-                                    name = myElement.ownText();
+                                    String name = myElement.ownText();
                                     // Log.e("name","name :  " + name);
                                     //keeping all names under array of names
                                     names.add(name);
@@ -128,8 +116,9 @@ public class MainActivity extends AppCompatActivity {
                                 //<div class=""><span class="search-data-num">6.37</span> ₪</div>
                                 //selecting prices from html
                                 Elements pricesElements = parsedDocument.select("span.search-data-num");
+                                ArrayList<String> prices = new ArrayList<>();
                                 for (Element priceElement : pricesElements) {
-                                    price = priceElement.ownText();
+                                    String price = priceElement.ownText();
                                     //keeping all prices under array of prices
                                     prices.add(price);
                                 }
@@ -141,40 +130,43 @@ public class MainActivity extends AppCompatActivity {
 
                                  */
                                 Elements urlImages = parsedDocument.select("figure.search-figure>a>img");
+                                ArrayList<String> urlImgs = new ArrayList<>();
                                 for (Element urlElement : urlImages) {
                                     //getting value  --> ("src") <-- <img src="https://maps.googleapis.com/maps/api/streetview?size=260x150&location=31.749428,35.206287" >
-                                    urlImg = urlElement.attr("src");
+                                    String urlImg = urlElement.attr("src");
                                     urlImgs.add(urlImg);
                                 }
                                 Log.e("size", "size" + allStations.size());
+
+                                if (allStations != null) {
+                                    allStations.clear();
+                                }
+                                //LOOP OF CREATING OBJECTS
+                                for (int i = 0; i < names.size(); i++) {
+                                    Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i));
+                                    allStations.add(station);
+                                }
                             } catch (MalformedURLException mue) {
                                 mue.printStackTrace();
                             } catch (IOException ioe) {
                                 ioe.printStackTrace();
                             } finally {
                                 try {
-                                    if (is != null) is.close();
+                                    if (is != null)
+                                        is.close();
                                 } catch (IOException ioe) {
                                 }
 
                             }
+
                             //post to UI (main thread) through post method .without post method there will be CalledFromWrongThreadException
                             myRecycler.post(new Runnable() {//alternatively use  runOnUiThread();
                                 @Override
                                 public void run() {
-                                    if (allStations != null) {
-                                        allStations.clear();
-                                    }
-                                    //LOOP OF CREATING OBJECTS
-                                    for (int i = 0; i < names.size(); i++) {
-                                        Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i));
-                                        allStations.add(station);
-                                    }
-                                    MyAdapter myAdapter = new MyAdapter(allStations, MainActivity.this);
                                     myAdapter.notifyDataSetChanged();
-                                    myRecycler.setAdapter(myAdapter);//In order to display items in the list, call setAdapter(ListAdapter) to associate an adapter with the list.
                                     progressDialog.dismiss();//dismiss progress bar after call was completed
                                     cityET.setText(" ");
+
                                 }
                             });
                         }

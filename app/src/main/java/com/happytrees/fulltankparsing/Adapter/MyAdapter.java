@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -19,7 +18,6 @@ import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
@@ -44,14 +42,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Station station = stations.get(position);
         holder.bindDataFromArrayToView(station);
-
     }
 
     @Override
     public int getItemCount() {
         return stations.size();
     }
-
 
 
     //INNER CLASS
@@ -64,57 +60,43 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         }
 
 
-
-
         public void bindDataFromArrayToView(final Station currentStation) {
-            TextView nameTV = (TextView)myView.findViewById(R.id.nameTV);
+            TextView nameTV = myView.findViewById(R.id.nameTV);
             nameTV.setText(currentStation.name);
 
 
-            TextView priceTV1 = (TextView)myView.findViewById(R.id.price1);
+            TextView priceTV1 = myView.findViewById(R.id.price1);
             priceTV1.setText(currentStation.price1);
 
 
-            TextView priceTV2 = (TextView)myView.findViewById(R.id.price2);
+            TextView priceTV2 = myView.findViewById(R.id.price2);
             priceTV2.setText(currentStation.price2);
 
-            TextView priceTV3 = (TextView)myView.findViewById(R.id.price3);
+            TextView priceTV3 = myView.findViewById(R.id.price3);
             priceTV3.setText(currentStation.price3);
 
 
-            ImageView stationIV = (ImageView)myView.findViewById(R.id.stationIV);
+            ImageView stationIV = myView.findViewById(R.id.stationIV);
 
 
-            final ProgressBar progressBar = (ProgressBar) myView.findViewById(R.id.progress);
+            final ProgressBar progressBar = myView.findViewById(R.id.progress);
             progressBar.setVisibility(View.VISIBLE);////make progress bar visible
 
 
+            Glide.with(context).load(currentStation.urlImage).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    progressBar.setVisibility(View.GONE);//removes progress bar if there was exception
+                    return false;
+                }
 
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    progressBar.setVisibility(View.GONE);////removes progress bar if picture finished loading
+                    return false;
 
-                Glide.with(context).load(currentStation.urlImage).listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);//removes progress bar if there was exception
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);////removes progress bar if picture finished loading
-                        return false;
-
-                    }
-
-                }).into(stationIV);//SET IMAGE THROUGH GLIDE
-
+                }
+            }).into(stationIV);//SET IMAGE THROUGH GLIDE
         }
-
-
-
-
-
     }
-
-
-
 }
