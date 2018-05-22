@@ -1,7 +1,20 @@
 package com.happytrees.fulltankparsing;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,21 +45,22 @@ import java.util.ArrayList;
 //onNullInstance
 //remove keyboard after search
 //one adapter for multiple adapters
+//icon
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private final static String START_STRING = " https://www.fulltank.co.il/?s= ";
     private final static String END_STRING = "&latitude=undefined&longitude=undefined&sort=cheapest";
+    private final static int REQUEST_CODE_LOCATION = 1;
     public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
     public EditText cityET;
     public Button goBtn;
     public ProgressDialog progressDialog;
+    LocationManager locationManager;
+    Location lastKnowLoc;
 
-
-    //creating object Station and assigning its string variable value as myElement.ownText()
-    //    Station station = new Station(myElement.ownText(),1,2,3);
-    /// /    allStations.add(station);
+    //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 
     @Override
@@ -57,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         goBtn = findViewById(R.id.GoButton);
         cityET = findViewById(R.id.cityET);
-
-
-//https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 
         myRecycler = findViewById(R.id.MyRecyclerView);
@@ -73,9 +84,31 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setTitle("ProgressDialog bar ");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-
         final MyAdapter myAdapter = new MyAdapter(allStations, MainActivity.this);
         myRecycler.setAdapter(myAdapter);
+
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //check if GPS enabled
+
+        //GPS CHECK
+        gpsCheck();
+
+
+        //PERMISSIONS CHECK IF ANDROID VERSION IS 6.0 OR ABOVE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)//VERSION_CODES.M = Android 6.0  --> we check if our minimum sdk greater or equal to 6.0 (this when runtime permissions first took place)
+        {
+            //check location permission
+            checkLocationPermission();
+        } else {
+           //no need in permission  check  proceed to check location
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
+            lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+
+        }
+
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,6 +217,96 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Will be called every time location gets updated
+        Log.e("location","lat: "+location.getLatitude()+" lon:"+location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {//when accuracy changes
+        //do nothing
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {//if the user turns on the provider (GPS)
+     Toast.makeText(MainActivity.this," thank you :) ",Toast.LENGTH_SHORT).show();
+        Log.e("GPS", "ENABLED");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {//user disabled GPS
+        //request user enable gps
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);//dialog warning that gps disabled
+            builder.setMessage("Your GPS seems to be disabled, please  enable it?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+
+            builder.show();
+        }
+    }
+
+    public void gpsCheck() {
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);//dialog warning that gps disabled
+            builder.setMessage("Your GPS seems to be disabled, please  enable it?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+
+            builder.show();//don't forget otherwise dialog wont show
+        } else {
+            Log.e("GPS", "ENABLED");
+        }
+    }
+
+
+    //METHOD CHECKS LOCATION PERMISSION
+    public void checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {//if there wasn't already permission granted
+            //if there no permission enabled we can request the permission.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
+        } else {
+            //if there is already permission granted request location update
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
+            lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode==REQUEST_CODE_LOCATION)
+        {
+            if(grantResults[0] ==PackageManager.PERMISSION_GRANTED )
+            {
+                //if there is  permission granted request location update
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
+                lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+
+
+
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
+            }
+        }
+
+    }
+
 }
 
 
