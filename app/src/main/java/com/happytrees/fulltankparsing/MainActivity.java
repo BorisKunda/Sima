@@ -30,11 +30,13 @@ import java.util.ArrayList;
 
 //HOVOT :
 //onNullInstance
+//remove keyboard after search
+//one adapter for multiple adapters
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String START_STRING = " https://www.fulltank.co.il/?s= ";
-    private final static String END_STRING = "&latitude=undefined&longitude=undefined";
+    private final static String END_STRING = "&latitude=undefined&longitude=undefined&sort=cheapest";
     public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
     public EditText cityET;
@@ -136,16 +138,18 @@ public class MainActivity extends AppCompatActivity {
                                     String urlImg = urlElement.attr("src");
                                     urlImgs.add(urlImg);
                                 }
-                                Log.e("size", "size" + allStations.size());
 
+                                //delete old results if exist
                                 if (allStations != null) {
                                     allStations.clear();
                                 }
+
                                 //LOOP OF CREATING OBJECTS
                                 for (int i = 0; i < names.size(); i++) {
                                     Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i));
                                     allStations.add(station);
                                 }
+
                             } catch (MalformedURLException mue) {
                                 mue.printStackTrace();
                             } catch (IOException ioe) {
@@ -190,18 +194,3 @@ public class MainActivity extends AppCompatActivity {
 //Jsoup.parse -> when we are dealing with raw string html text
 //Jsoup.connect -> when we are dealing with url HTML link
 
-
-/*
-     final List<Location> allLocations = Location.listAll(Location.class);
-
-        RecyclerView recyclerView = v.findViewById(R.id.locationRecyclerView);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());//layout manager defines look of RecyclerView -- > grid,list
-        recyclerView.setLayoutManager(layoutManager);
-
-        //adapter
-        final LocationAdapter locationAdapter = new LocationAdapter(allLocations, getActivity());
-
-        recyclerView.setAdapter(locationAdapter);
-
- */
