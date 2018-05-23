@@ -46,6 +46,10 @@ import java.util.ArrayList;
 //remove keyboard after search
 //one adapter for multiple adapters
 //icon
+//hebrew support
+//slow recycler view
+//gradient
+//use icons instead part of text in order to increase font
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -63,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public ProgressDialog progressDialog;
     LocationManager locationManager;
     Location lastKnowLoc;
+    public static Double lat;
+    public static Double lng;
+
 
 
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
@@ -107,11 +114,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             //check location permission
             checkLocationPermission();
         } else {
-           //no need in permission  check  proceed to check location
+            //no need in permission  check  proceed to check location
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(lastKnowLoc!=null) {
-                Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+            if (lastKnowLoc != null) {
+                Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
 
 
@@ -128,20 +135,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         public void run() {
                             String city = cityET.getText().toString();
                             String cityImproved = city.replace(" ", "%20");
-                           // String fullUrl = START_STRING + cityImproved + END_STRING;
+                            // String fullUrl = START_STRING + cityImproved + END_STRING;
                             String fullUrl;
 
-                            if(lastKnowLoc!=null) {
+                            if (lastKnowLoc != null) {
                                 //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
-                                double lat =  lastKnowLoc.getLatitude();
-                                double lng =  lastKnowLoc.getLongitude();
+                                lat = lastKnowLoc.getLatitude();
+                                lng = lastKnowLoc.getLongitude();
                                 //convert lat to String
-                                String myLat = String.valueOf(lat);
-                                String myLng = String.valueOf(lng);
+                              String  myLat = String.valueOf(lat);
+                              String  myLng = String.valueOf(lng);
                                 fullUrl = START_STRING + cityImproved + STRING1 + myLat + STRING2 + myLng + STRING3;
 
 
-                            }else{
+                            } else {
                                 //if there is no latitude and longitude received use alternative link  --> https://www.fulltank.co.il/?s=PLACE&latitude=undefined&longitude=undefined&sort=cheapest
                                 fullUrl = START_STRING + cityImproved + END_STRING;
                             }
@@ -245,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         //Will be called every time location gets updated
-        Log.e("location","lat: "+location.getLatitude()+" lon:"+location.getLongitude());
+        Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
     }
 
     @Override
@@ -255,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onProviderEnabled(String provider) {//if the user turns on the provider (GPS)
-     Toast.makeText(MainActivity.this," thank you :) ",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, " thank you :) ", Toast.LENGTH_SHORT).show();
         Log.e("GPS", "ENABLED");
     }
 
@@ -303,8 +310,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             //if there is already permission granted request location update
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(lastKnowLoc!=null) {
-                Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+            if (lastKnowLoc != null) {
+                Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
         }
     }
@@ -313,22 +320,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if(requestCode==REQUEST_CODE_LOCATION)
-        {
-            if(grantResults[0] ==PackageManager.PERMISSION_GRANTED )
-            {
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //if there is  permission granted request location update
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
                 lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(lastKnowLoc!=null) {
-                    Log.e("location " , " location   "  + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude() );
+                if (lastKnowLoc != null) {
+                    Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
                 }
 
 
-
-            }
-            else
-            {
+            } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
             }
         }

@@ -37,6 +37,26 @@
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content" />
 
+            <TextView
+                android:id="@+id/distanceTV"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#00b2cc"
+                android:text="distance :"
+                android:textSize="10sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#0277bd"
+                android:id="@+id/distanceValTV"
+                android:textSize="10sp"
+                android:layout_marginTop="30dp"
+                android:layout_alignStart="@id/distanceTV"
+                android:text="unknown"/>
+
 
             <ProgressBar
                 android:id="@+id/progress"
