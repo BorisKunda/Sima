@@ -234,7 +234,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     builder.setPositiveButton("Save to Favourites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Station station = new Station(currentStation.name,currentStation.price1,currentStation.price2,currentStation.price3,currentStation.urlImage,currentStation.distance);
+                            Station station = new Station(currentStation.name,currentStation.price1,currentStation.price2,currentStation.price3,currentStation.urlImage,"unknown");
                             station.save();
                             Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show();
                             //save to DB

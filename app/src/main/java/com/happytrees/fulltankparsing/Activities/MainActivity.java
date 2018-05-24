@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -347,6 +349,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_menu, menu);//inflate menu via xml template
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.favouriteMenuItem:
+                //call favourites activity
+                break;
+
+            case R.id.exitMenuItem:
+                ActivityCompat.finishAffinity(MainActivity.this);//closes all activities at time.for API 4.1+ (in this case 4.3+) you can use "finishAffinity();"
+                break;
+        }
+        return true;
+    }
 }
 
 
