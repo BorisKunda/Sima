@@ -359,7 +359,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.favouriteMenuItem:
-                //call favourites activity
+                 Intent fIntent = new Intent(MainActivity.this,FavouritesActivity.class);
+                 startActivity(fIntent);
                 break;
 
             case R.id.exitMenuItem:

@@ -13,10 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="DATABASE" android:value = "favourites.db"/>
-        <meta-data android:name="VERSION" android:value = "1"/>
-        <meta-data android:name="QUERY_LOG" android:value = "true"/>
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value = "com.happytrees.fulltankparsing"/>
+        <meta-data
+            android:name="DATABASE"
+            android:value="favourites.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.happytrees.fulltankparsing" />
+
         <activity android:name=".Activities.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +38,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ" />
 
-        <activity android:name=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.MainActivity" />
+        <activity android:name=".Activities.FavouritesActivity"></activity>
     </application>
 
 </manifest>
