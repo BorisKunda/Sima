@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/nameTV"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:text="nameTV"
                 android:layout_margin="10dp"
                 android:gravity="center"
@@ -45,14 +45,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="#00b2cc"
                 android:text="distance :"
-                android:textSize="10sp"/>
+                android:textSize="15sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#0277bd"
                 android:id="@+id/distanceValTV"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_marginTop="30dp"
                 android:layout_alignStart="@id/distanceTV"
                 android:text="unknown"/>
@@ -69,8 +69,8 @@
 
             <ImageView
                 android:id="@+id/stationIV"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 card_view:srcCompat="@color/colorPrimary" />
@@ -82,13 +82,13 @@
                 android:layout_alignStart="@+id/b"
                 android:layout_alignTop="@+id/stationIV"
                 android:text="₪"
-                android:textSize="10sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:text="₪"
                 android:layout_marginTop="18dp"
                 android:id="@+id/b"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="40dp"
                 android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
             <TextView
                 android:text="₪"
                 android:id="@+id/c"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_alignParentEnd ="true"
                 android:layout_marginEnd ="40dp"
                 android:layout_alignBottom="@id/price3"
@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:text="price1"
                 android:id="@+id/price1"/>
 
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_marginTop="18dp"
                 android:text="price2"
                 android:id="@+id/price2"/>
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_alignBottom="@id/stationIV"
                 android:text="price3"
                 android:id="@+id/price3"/>
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:text="self-service"
                 android:layout_alignTop="@id/stationIV"
                 android:layout_alignParentEnd="true"
@@ -143,7 +143,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:text="cash"
                 android:layout_alignBottom="@id/stationIV"
                 android:layout_alignParentEnd="true"
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="credit card"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="60dp"/>
 

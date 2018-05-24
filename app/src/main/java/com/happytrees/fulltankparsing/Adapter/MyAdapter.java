@@ -109,8 +109,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                             distanceTV.setText("unknown");
                         } else {
                             float[] distanceResults = new float[10];//10 random number.you need any number higher than 3
-                           // Location.distanceBetween(MainActivity.lat, MainActivity.lng, ll.get(0).latitude, ll.get(0).longitude, distanceResults);//DEFAULT IN KILOMETERS
-                            Location.distanceBetween(31.96120024, 34.88155316,  31.936582, 34.8832343, distanceResults);//DEFAULT IN KILOMETERS
+                            Location.distanceBetween(MainActivity.lat, MainActivity.lng, ll.get(0).latitude, ll.get(0).longitude, distanceResults);//DEFAULT IN KILOMETERS
+                          //  Location.distanceBetween(31.96120024, 34.88155316,  31.936582, 34.8832343, distanceResults);//DEFAULT IN KILOMETERS
                             Double roundedDis =  (double)Math.round( (distanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
                             distanceTV.setText(roundedDis + "km");
                         }

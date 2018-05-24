@@ -42,15 +42,23 @@ import java.util.ArrayList;
 
 
 //HOVOT :
+//maybe address
+//fresh key
+//encode decode
 //onNullInstance
 //remove keyboard after search
 //one adapter for multiple adapters
 //icon
 //hebrew support
-//slow recycler view
+//slow recycler view --> static variable?geocoder?
+//+ instead of %20
 //gradient
 //use icons instead part of text in order to increase font
-
+//beutiful buttons
+//picasso vs glide
+//make cards grey
+//covert your lat lng to city name
+//https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private final static String START_STRING = " https://www.fulltank.co.il/?s= ";
