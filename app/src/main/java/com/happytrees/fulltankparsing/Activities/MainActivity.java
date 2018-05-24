@@ -1,4 +1,4 @@
-package com.happytrees.fulltankparsing;
+package com.happytrees.fulltankparsing.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.happytrees.fulltankparsing.Adapter.MyAdapter;
 import com.happytrees.fulltankparsing.Objects.Station;
+import com.happytrees.fulltankparsing.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -42,11 +43,12 @@ import java.util.ArrayList;
 
 
 //HOVOT :
+//driver navigation
 //maybe address
 //fresh key
 //encode decode
 //onNullInstance
-//remove keyboard after search
+//close keyboard after search
 //one adapter for multiple adapters
 //icon
 //hebrew support

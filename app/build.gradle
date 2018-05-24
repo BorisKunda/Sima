@@ -38,4 +38,10 @@ dependencies {
     implementation 'com.android.support:mediarouter-v7:27.1.1'
     implementation 'com.android.support:palette-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
+    // //retrofit
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //sugar ORM
+    implementation 'com.github.satyan:sugar:1.5'
 }

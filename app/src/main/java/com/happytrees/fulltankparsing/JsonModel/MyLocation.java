@@ -1,6 +1,6 @@
 package com.happytrees.fulltankparsing.JsonModel;
 
 public class MyLocation {
-    public double lat;
-    public double lng;
+    public String lat;
+    public String lng;
 }

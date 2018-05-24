@@ -1,11 +1,12 @@
-package com.happytrees.fulltankparsing;
+package com.happytrees.fulltankparsing.Activities;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ProgressBar;
+
+import com.happytrees.fulltankparsing.R;
 
 public class SplashScreen extends AppCompatActivity {
 
