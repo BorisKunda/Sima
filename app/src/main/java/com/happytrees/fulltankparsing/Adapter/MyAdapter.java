@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -185,44 +186,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
              */
 
 
-            //fetching place's location according to it's name
-            if (Geocoder.isPresent()) {
-                try {
-                    String location = currentStation.name;   // "יעד מור רמלה"  ;//currentStation.name;
-                    Geocoder gc = new Geocoder(context);
-                    List<Address> addresses = gc.getFromLocationName(location, 1); // get the found Address Objects
 
-                    List<LatLng> ll = new ArrayList<LatLng>(addresses.size()); // A list to save the coordinates if they are available
-                    for (Address a : addresses) {
-                        if (a.hasLatitude() && a.hasLongitude()) {
-                            ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
-                        }
-                    }
-
-                    if (ll.isEmpty()) {
-                        distanceTV.setText("unknown");
-                    } else {
-                        //if one of double is empty write unknown
-                        if (MainActivity.lat == null || MainActivity.lng == null) {
-                            distanceTV.setText("unknown");
-                        } else {
-                            float[] distanceResults = new float[10];//10 random number.you need any number higher than 3
-                            Location.distanceBetween(MainActivity.lat, MainActivity.lng, ll.get(0).latitude, ll.get(0).longitude, distanceResults);//DEFAULT IN KILOMETERS
-                          //  Location.distanceBetween(31.96120024, 34.88155316,  31.936582, 34.8832343, distanceResults);//DEFAULT IN KILOMETERS
-                            Double roundedDis =  (double)Math.round( (distanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
-                            distanceTV.setText(roundedDis + "km");
-                        }
-
-                    }
-
- //ganey aviv 31.96120024 34.88155316
-                    // iad mor ramle -> 31.936582,34.8832343
-
-                } catch (IOException e) {
-                    // handle the exception
-                }
-            }
-
+            distanceTV.setText("unknown");
 
             ImageView stationIV = myView.findViewById(R.id.stationIV);
 
@@ -245,6 +210,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
                 }
             }).into(stationIV);//SET IMAGE THROUGH GLIDE
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context," TOUCH",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(context,"LONG TOUCH",Toast.LENGTH_SHORT).show();
+                    //DIALOG - SAVE TO FAVOURITES OR OPEN NAVIGATION
+                    return true;
+                }
+            });
         }
     }
 }
