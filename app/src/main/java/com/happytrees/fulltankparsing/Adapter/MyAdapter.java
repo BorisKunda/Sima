@@ -1,6 +1,8 @@
 package com.happytrees.fulltankparsing.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -215,7 +217,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context," TOUCH",Toast.LENGTH_SHORT).show();
+                   //open map
+                    Toast.makeText(context,"click",Toast.LENGTH_SHORT).show();
+
                 }
             });
 
@@ -223,8 +227,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Toast.makeText(context,"LONG TOUCH",Toast.LENGTH_SHORT).show();
                     //DIALOG - SAVE TO FAVOURITES OR OPEN NAVIGATION
+                    //alert dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("which one suits you best?");//dialog message
+                    builder.setPositiveButton("Save to Favourites", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Station station = new Station(currentStation.name,currentStation.price1,currentStation.price2,currentStation.price3,currentStation.urlImage,currentStation.distance);
+                            station.save();
+                            Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show();
+                            //save to DB
+                        }
+                    });
+
+                    builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(context,"driver",Toast.LENGTH_SHORT).show();
+                          //begin direction
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(context,"closed",Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
                     return true;
                 }
             });
@@ -232,3 +264,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 }
 
+/*
+  ResultDB altResultDB = new ResultDB(txtResultCurrent.name,txtResultCurrent.formatted_address,txtResultCurrent.geometry.location.lat,txtResultCurrent.geometry.location.lng,"no photo");
+                                altResultDB.save();
+ */
