@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     Location lastKnowLoc;
     public static Double lat;
     public static Double lng;
+    public ArrayList<String> names;
 
     //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
                                 //NAMES
                                 Elements myElements = parsedDocument.select("h2 > a");
-                                ArrayList<String> names = new ArrayList<>();
+                                names = new ArrayList<>();
                                 for (Element myElement : myElements) {
                                     //getting station's name
                                     String name = myElement.ownText();
@@ -199,6 +200,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     //keeping all names under array of names
                                     names.add(name);
                                 }
+
+
+                                //
+
+                                //JSON OBJECT --> getting place location
+
+
+                          /*      try {
+                                    //JSON parsing
+                                    JSONObject jsonObjectContainer = new JSONObject("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
+                                    JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+                                    JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                                    JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                                    JSONObject locationObject = geometryObject.getJSONObject("location");
+                                    Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } */
 
                                 //PRICES
                                 //<div class=""><span class="search-data-num">6.37</span> ₪</div>
@@ -246,6 +266,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                         is.close();
                                 } catch (IOException ioe) {
                                 }
+                            }
+
+                            for(int b =0;b<names.size();b++) {
+                                String placeName   =  names.get(b);
+                                String placeNameFixed = placeName.replace(" ","+");
+                                String gasStation = "gas+station+";
+                                String fullQuery = gasStation + placeNameFixed;
+                                String startGooglePlace = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+                                String endGooglePlace = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
+                                String fullGoogleUrl = startGooglePlace + fullQuery + endGooglePlace;
+                                jsonParser(fullGoogleUrl);
 
                             }
 
@@ -380,29 +411,44 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return true;
     }
 
-
-
-
-    //READ URL
-    private String readURL(String theUrl) {
-        StringBuilder content = new StringBuilder();
+    public void jsonParser(String googlePlaces) {
+        InputStream is2 = null;
         try {
-            //create a url object
-            URL url = new URL(theUrl);
-            //creates a urlConnection object
-            URLConnection urlConnection = url.openConnection();
-            //wrap the urlConnection in a BufferReader
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String line;
-            //read from the urlConnection via the bufferReader
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
+            URL url2 = new URL(googlePlaces);
+            is2 = url2.openStream();  // throws an IOException
+            BufferedReader br2 = new BufferedReader(new InputStreamReader(is2));
+            String currentLine2;
+            String line2 = " ";
+            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
+            while ((currentLine2 = br2.readLine()) != null) {
+                line2 += currentLine2;
             }
-            bufferedReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            try {
+                //JSON parsing
+                JSONObject jsonObjectContainer = new JSONObject(line2);
+                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                JSONObject locationObject = geometryObject.getJSONObject("location");
+                Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (is2 != null)
+                    is2.close();
+            } catch (IOException ioe) {
+            }
         }
-        return content.toString();
+
     }
 }
 
