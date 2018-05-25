@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final static String STRING2 = "&longitude=";
     private final static String STRING3 = "&sort=cheapest";
 
+
     private final static int REQUEST_CODE_LOCATION = 1;
     public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public static Double lat;
     public static Double lng;
 
-
+    //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
@@ -142,8 +143,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         }
 
-        //AsyncTaskJsonParser asyncTaskJsonParser = new AsyncTaskJsonParser();//instantiate class  READJSON
-        //asyncTaskJsonParser.execute("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
+
 
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     //keeping all names under array of names
                                     names.add(name);
                                 }
+
                                 //PRICES
                                 //<div class=""><span class="search-data-num">6.37</span> ₪</div>
                                 //selecting prices from html
@@ -379,45 +380,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return true;
     }
 
-     /*
-      <Params,Progress,Result>
-       Params - The type of the input variables value you want to set to the background process. This can be an array of objects -->doInBackground
-       Progress - The type of the objects you are going to enter in the onProgressUpdate method.-->onProgressUpdate
-       Result - The type of the result from the operations you have done in the background process.-->onPostExecute()
-       */
 
-    //inner class async task
-    class AsyncTaskJsonParser extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            return readURL(params[0]);//params[0] refers to first element in array of urls .
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                //JSON parsing
-                JSONObject jsonObjectContainer = new JSONObject(result);
-                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-
-
-
-                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
-                JSONObject geometryObject = resultObject.getJSONObject("geometry");
-                JSONObject locationObject = geometryObject.getJSONObject("location");
-                Log.e("AsyncLoc" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
-
-
-
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-        }
 
 
     //READ URL
@@ -451,9 +414,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //Jsoup.parse -> when we are dealing with raw string html text
 //Jsoup.connect -> when we are dealing with url HTML link
 
-/*
-String nameFromActivity = currentStation.name;
-            String nameFromActivityRemovedSpace = nameFromActivity.replace(" ", "+");
-            String gasStation = "gas+station+";
-            String fullQuery = gasStation + nameFromActivityRemovedSpace;
+
+
+/*Jason
+    //JSON parsing
+                JSONObject jsonObjectContainer = new JSONObject(result);
+                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                JSONObject locationObject = geometryObject.getJSONObject("location");
+                Log.e("AsyncLoc" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+ */
+
+
+/*String
+  String placeName   =  names.get(n);
+                                String placeNameFixed = placeName.replace(" ","+");
+                                String gasStation = "gas+station+";
+                                String fullQuery = gasStation + placeNameFixed;
+                                String startGooglePlace = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+                                String endGooglePlace = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
+                                String fullGoogleUrl = startGooglePlace + fullQuery + endGooglePlace;
  */
