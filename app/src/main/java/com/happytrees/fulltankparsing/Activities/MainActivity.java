@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,9 @@ import com.happytrees.fulltankparsing.Adapter.MyAdapter;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,6 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 
@@ -136,6 +141,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         }
+
+        AsyncTaskJsonParser asyncTaskJsonParser = new AsyncTaskJsonParser();//instantiate class  READJSON
+        asyncTaskJsonParser.execute("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
 
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -370,6 +378,69 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         return true;
     }
+
+     /*
+      <Params,Progress,Result>
+       Params - The type of the input variables value you want to set to the background process. This can be an array of objects -->doInBackground
+       Progress - The type of the objects you are going to enter in the onProgressUpdate method.-->onProgressUpdate
+       Result - The type of the result from the operations you have done in the background process.-->onPostExecute()
+       */
+
+    //inner class async task
+    class AsyncTaskJsonParser extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            return readURL(params[0]);//params[0] refers to first element in array of urls .
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                //JSON parsing
+                JSONObject jsonObjectContainer = new JSONObject(result);
+                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+
+
+
+                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                JSONObject locationObject = geometryObject.getJSONObject("location");
+                Log.e("AsyncLoc" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+
+
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        }
+
+
+    //READ URL
+    private String readURL(String theUrl) {
+        StringBuilder content = new StringBuilder();
+        try {
+            //create a url object
+            URL url = new URL(theUrl);
+            //creates a urlConnection object
+            URLConnection urlConnection = url.openConnection();
+            //wrap the urlConnection in a BufferReader
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String line;
+            //read from the urlConnection via the bufferReader
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line + "\n");
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content.toString();
+    }
 }
 
 
@@ -380,3 +451,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //Jsoup.parse -> when we are dealing with raw string html text
 //Jsoup.connect -> when we are dealing with url HTML link
 
+/*
+String nameFromActivity = currentStation.name;
+            String nameFromActivityRemovedSpace = nameFromActivity.replace(" ", "+");
+            String gasStation = "gas+station+";
+            String fullQuery = gasStation + nameFromActivityRemovedSpace;
+ */

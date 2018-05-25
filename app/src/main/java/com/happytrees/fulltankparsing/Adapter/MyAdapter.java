@@ -3,8 +3,10 @@ package com.happytrees.fulltankparsing.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,14 @@ import com.bumptech.glide.request.target.Target;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 
@@ -38,7 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // lngFromMainActivity;
 
     }
-
+//https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 
     @NonNull
     @Override
@@ -88,10 +98,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
             TextView distanceTV = myView.findViewById(R.id.distanceValTV);
 
-            String nameFromActivity = currentStation.name;
-            String nameFromActivityRemovedSpace = nameFromActivity.replace(" ", "+");
-            String gasStation = "gas+station+";
-            String fullQuery = gasStation + nameFromActivityRemovedSpace;
+
+
 
 
             distanceTV.setText("unknown");
@@ -167,4 +175,5 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             });
         }
     }
+
 }
