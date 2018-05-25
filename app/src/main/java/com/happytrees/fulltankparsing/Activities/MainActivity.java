@@ -45,6 +45,7 @@ import java.util.ArrayList;
 
 
 //HOVOT :
+//map onClick
 //driver navigation
 //maybe address
 //fresh key
