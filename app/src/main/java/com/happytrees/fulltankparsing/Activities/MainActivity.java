@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         }
 
-        AsyncTaskJsonParser asyncTaskJsonParser = new AsyncTaskJsonParser();//instantiate class  READJSON
-        asyncTaskJsonParser.execute("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
+        //AsyncTaskJsonParser asyncTaskJsonParser = new AsyncTaskJsonParser();//instantiate class  READJSON
+        //asyncTaskJsonParser.execute("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
 
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
