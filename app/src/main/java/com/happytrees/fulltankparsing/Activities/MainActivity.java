@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,11 +44,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 
 //HOVOT :
+//fix sugar orm
 //map onClick
 //driver navigation
 //maybe address
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final static String STRING2 = "&longitude=";
     private final static String STRING3 = "&sort=cheapest";
 
-
     private final static int REQUEST_CODE_LOCATION = 1;
     public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
@@ -86,11 +84,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public ProgressDialog progressDialog;
     LocationManager locationManager;
     Location lastKnowLoc;
-    public static Double lat;
-    public static Double lng;
-    public ArrayList<String> names;
+    public Double lat;
+    public Double lng;
 
-    //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
+
 
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
@@ -144,8 +141,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         }
 
-
-
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,12 +182,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 while ((currentLine = br.readLine()) != null) {
                                     line += currentLine;
                                 }
+
                                 //parsing html
                                 Document parsedDocument = Jsoup.parse(line);
                                 //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
+
                                 //NAMES
                                 Elements myElements = parsedDocument.select("h2 > a");
-                                names = new ArrayList<>();
+                                ArrayList<String> names = new ArrayList<>();
                                 for (Element myElement : myElements) {
                                     //getting station's name
                                     String name = myElement.ownText();
@@ -200,25 +197,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     //keeping all names under array of names
                                     names.add(name);
                                 }
-
-
-                                //
-
-                                //JSON OBJECT --> getting place location
-
-
-                          /*      try {
-                                    //JSON parsing
-                                    JSONObject jsonObjectContainer = new JSONObject("https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ");
-                                    JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-                                    JSONObject resultObject =jsonArrayResults.getJSONObject(0);
-                                    JSONObject geometryObject = resultObject.getJSONObject("geometry");
-                                    JSONObject locationObject = geometryObject.getJSONObject("location");
-                                    Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } */
 
                                 //PRICES
                                 //<div class=""><span class="search-data-num">6.37</span> ₪</div>
@@ -230,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     //keeping all prices under array of prices
                                     prices.add(price);
                                 }
+
                                 //IMAGES
                                 /*
                                   <figure class="search-figure">
@@ -237,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                  </figure>
 
                                  */
+
                                 Elements urlImages = parsedDocument.select("figure.search-figure>a>img");
                                 ArrayList<String> urlImgs = new ArrayList<>();
                                 for (Element urlElement : urlImages) {
@@ -248,6 +228,80 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 //delete old results if exist
                                 if (allStations != null) {
                                     allStations.clear();
+                                }
+
+                                ArrayList<String>googleLats = new ArrayList<>();
+                                ArrayList<String>googleLngs = new ArrayList<>();
+                                //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
+                                for(int n = 0 ; n< names.size();n++){
+                                    //run on array of names ,insert name into google link respectively
+                                  String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
+                                  String googlePlaceName   = names.get(n);
+                                  String googlePlaceNameFixed = googlePlaceName.replace(" ","+");
+                                  String googlePlacesStartEnd = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
+                                  String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
+
+
+                                  //download http from url and keep it under String
+                                    InputStream inputStreamFromGoogle =null;
+
+                                    try{
+                                        URL googleUrl = new URL(fullGoogleLink);
+                                        inputStreamFromGoogle = googleUrl.openStream();
+                                        BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
+                                        String currentLineFromGoogle;
+                                        String lineGoogle = " ";
+                                        //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
+                                        while((currentLineFromGoogle = googleBufferedReader.readLine())!= null) {
+                                            lineGoogle += currentLineFromGoogle;
+                                        }
+
+                                        //json parsing
+                                        try {
+                                            //JSON parsing
+                                            JSONObject jsonObjectContainer = new JSONObject(lineGoogle);
+                                            JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+                                            JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                                            JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                                            JSONObject locationObject = geometryObject.getJSONObject("location");
+                                            Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+
+                                    } catch (MalformedURLException mue) {
+                                        mue.printStackTrace();
+                                    } catch (IOException ioe) {
+                                        ioe.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (inputStreamFromGoogle != null)
+                                                inputStreamFromGoogle.close();
+                                        } catch (IOException ioe) {
+                                        }
+
+                                    }
+
+
+
+
+                                  /*
+                                    InputStream inputStreamFromGoogle = null;
+        try {
+            URL googleUrl = new URL(googlePlaces);
+            inputStreamFromGoogle = googleUrl.openStream();  // throws an IOException
+            BufferedReader br2 = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
+            String currentLine2;
+            String line2 = " ";
+            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
+            while ((currentLine2 = br2.readLine()) != null) {
+                line2 += currentLine2;
+            }
+                                   */
+
                                 }
 
                                 //LOOP OF CREATING OBJECTS
@@ -266,17 +320,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                         is.close();
                                 } catch (IOException ioe) {
                                 }
-                            }
-
-                            for(int b =0;b<names.size();b++) {
-                                String placeName   =  names.get(b);
-                                String placeNameFixed = placeName.replace(" ","+");
-                                String gasStation = "gas+station+";
-                                String fullQuery = gasStation + placeNameFixed;
-                                String startGooglePlace = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
-                                String endGooglePlace = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
-                                String fullGoogleUrl = startGooglePlace + fullQuery + endGooglePlace;
-                                jsonParser(fullGoogleUrl);
 
                             }
 
@@ -410,46 +453,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         return true;
     }
-
-    public void jsonParser(String googlePlaces) {
-        InputStream is2 = null;
-        try {
-            URL url2 = new URL(googlePlaces);
-            is2 = url2.openStream();  // throws an IOException
-            BufferedReader br2 = new BufferedReader(new InputStreamReader(is2));
-            String currentLine2;
-            String line2 = " ";
-            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
-            while ((currentLine2 = br2.readLine()) != null) {
-                line2 += currentLine2;
-            }
-
-            try {
-                //JSON parsing
-                JSONObject jsonObjectContainer = new JSONObject(line2);
-                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
-                JSONObject geometryObject = resultObject.getJSONObject("geometry");
-                JSONObject locationObject = geometryObject.getJSONObject("location");
-                Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        } catch (MalformedURLException mue) {
-            mue.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            try {
-                if (is2 != null)
-                    is2.close();
-            } catch (IOException ioe) {
-            }
-        }
-
-    }
 }
 
 
@@ -460,25 +463,3 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //Jsoup.parse -> when we are dealing with raw string html text
 //Jsoup.connect -> when we are dealing with url HTML link
 
-
-
-/*Jason
-    //JSON parsing
-                JSONObject jsonObjectContainer = new JSONObject(result);
-                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-                JSONObject resultObject =jsonArrayResults.getJSONObject(0);
-                JSONObject geometryObject = resultObject.getJSONObject("geometry");
-                JSONObject locationObject = geometryObject.getJSONObject("location");
-                Log.e("AsyncLoc" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
- */
-
-
-/*String
-  String placeName   =  names.get(n);
-                                String placeNameFixed = placeName.replace(" ","+");
-                                String gasStation = "gas+station+";
-                                String fullQuery = gasStation + placeNameFixed;
-                                String startGooglePlace = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
-                                String endGooglePlace = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
-                                String fullGoogleUrl = startGooglePlace + fullQuery + endGooglePlace;
- */
