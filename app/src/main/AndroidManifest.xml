@@ -18,7 +18,7 @@
             android:value="favourites.db" />
         <meta-data
             android:name="VERSION"
-            android:value="1" />
+            android:value="2" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />
@@ -36,7 +36,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ" />
+            android:value="AIzaSyCukYTKsi0GN19UPUJ_0Jd9_04l5CehLOc" />
 
         <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.FavouritesActivity"></activity>

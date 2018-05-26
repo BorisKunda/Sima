@@ -46,7 +46,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-
+//CHECK THAT KEYS WORK
 //HOVOT :
 //fix sugar orm
 //map onClick
@@ -64,6 +64,7 @@ import java.util.ArrayList;
 //gradient
 //use icons instead part of text in order to increase font
 //beutiful buttons
+//String Buffer Alternatives
 //picasso vs glide
 //make cards grey
 //covert your lat lng to city name
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public Double lng;
 
 
-
+    //keys -> KEY --> payed key
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //delete database
+        //Station.deleteAll(Station.class);
 
 
         goBtn = findViewById(R.id.GoButton);
@@ -112,9 +117,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         progressDialog.setMessage("Its loading....");
         progressDialog.setTitle("ProgressDialog bar ");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        final MyAdapter myAdapter = new MyAdapter(allStations, MainActivity.this);
-        myRecycler.setAdapter(myAdapter);
 
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -135,11 +137,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnowLoc != null) {
-                Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                // Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
 
 
         }
+
 
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +151,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     //opening new thread for using network
                     progressDialog.show();//SHOW PROGRESS BAR BEFORE CALL
                     new Thread(new Runnable() {
+                        MyAdapter myAdapter;
+
                         @Override
                         public void run() {
+                            Log.e("app", "step 1");
                             String city = cityET.getText().toString();
                             String cityImproved = city.replace(" ", "%20");
                             // String fullUrl = START_STRING + cityImproved + END_STRING;
@@ -159,9 +165,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
                                 lat = lastKnowLoc.getLatitude();
                                 lng = lastKnowLoc.getLongitude();
+
+                                myAdapter = new MyAdapter(allStations, MainActivity.this, lat, lng);
+                                myRecycler.setAdapter(myAdapter);
+
+
                                 //convert lat to String
-                              String  myLat = String.valueOf(lat);
-                              String  myLng = String.valueOf(lng);
+                                String myLat = String.valueOf(lat);
+                                String myLng = String.valueOf(lng);
                                 fullUrl = START_STRING + cityImproved + STRING1 + myLat + STRING2 + myLng + STRING3;
 
 
@@ -183,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     line += currentLine;
                                 }
 
+                                Log.e("app", "step 2");
                                 //parsing html
                                 Document parsedDocument = Jsoup.parse(line);
                                 //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
@@ -230,83 +242,101 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     allStations.clear();
                                 }
 
-                                ArrayList<String>googleLats = new ArrayList<>();
-                                ArrayList<String>googleLngs = new ArrayList<>();
+                                Log.e("app", "step 3");
+
+                                ArrayList<String> googleLats = new ArrayList<>();
+                                ArrayList<String> googleLngs = new ArrayList<>();
                                 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
-                                for(int n = 0 ; n< names.size();n++){
+                                for (int n = 0; n < names.size(); n++) {
                                     //run on array of names ,insert name into google link respectively
-                                  String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
-                                  String googlePlaceName   = names.get(n);
-                                  String googlePlaceNameFixed = googlePlaceName.replace(" ","+");
-                                  String googlePlacesStartEnd = "&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ";
-                                  String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
+                                    String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
+                                    String googlePlaceName = names.get(n);
+                                    String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
+                                    String googlePlacesStartEnd = "&key=KEY";
+                                    String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
 
 
-                                  //download http from url and keep it under String
-                                    InputStream inputStreamFromGoogle =null;
+                                    Log.e("app", "step 4");
 
-                                    try{
+                                    //download http from url and keep it under String
+                                    InputStream inputStreamFromGoogle = null;
+
+                                    try {
                                         URL googleUrl = new URL(fullGoogleLink);
                                         inputStreamFromGoogle = googleUrl.openStream();
                                         BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
                                         String currentLineFromGoogle;
                                         String lineGoogle = " ";
                                         //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
-                                        while((currentLineFromGoogle = googleBufferedReader.readLine())!= null) {
+                                        while ((currentLineFromGoogle = googleBufferedReader.readLine()) != null) {
                                             lineGoogle += currentLineFromGoogle;
+
+
                                         }
+
+                                        Log.e("url", "url " + n);
 
                                         //json parsing
                                         try {
                                             //JSON parsing
                                             JSONObject jsonObjectContainer = new JSONObject(lineGoogle);
                                             JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-                                            JSONObject resultObject =jsonArrayResults.getJSONObject(0);
+                                            JSONObject resultObject = jsonArrayResults.getJSONObject(0);
                                             JSONObject geometryObject = resultObject.getJSONObject("geometry");
                                             JSONObject locationObject = geometryObject.getJSONObject("location");
-                                            Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
+                                            if (locationObject != null) {
+                                                String latFromJson = locationObject.getString("lat");
+                                                String lngFromJson = locationObject.getString("lng");
+                                                googleLats.add(latFromJson);
+                                                googleLngs.add(lngFromJson);
+                                            } else {
+                                                googleLats.add("unknown");
+                                                googleLngs.add("unknown");
+                                            }
+
+                                            Log.e("json", "json" + n);
+
+                                            //    Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
-                                        }
+                                            googleLats.add("unknown");
+                                            googleLngs.add("unknown");
+                                            Log.e("JsonException", "JsonException" + n);
 
+                                        }
 
 
                                     } catch (MalformedURLException mue) {
                                         mue.printStackTrace();
+                                        Log.e("MalformedURLException", "MalformedURLException");
                                     } catch (IOException ioe) {
+                                        Log.e("IOException", "IOException1 ");
                                         ioe.printStackTrace();
                                     } finally {
                                         try {
                                             if (inputStreamFromGoogle != null)
                                                 inputStreamFromGoogle.close();
                                         } catch (IOException ioe) {
+                                            Log.e("IOException", "IOException2 ");
                                         }
 
                                     }
-
-
-
-
-                                  /*
-                                    InputStream inputStreamFromGoogle = null;
-        try {
-            URL googleUrl = new URL(googlePlaces);
-            inputStreamFromGoogle = googleUrl.openStream();  // throws an IOException
-            BufferedReader br2 = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
-            String currentLine2;
-            String line2 = " ";
-            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
-            while ((currentLine2 = br2.readLine()) != null) {
-                line2 += currentLine2;
-            }
-                                   */
-
                                 }
+                                Log.e("arraylat", "arraylat" + googleLats);
+                                Log.e("arraylat", "arraylat" + googleLngs);
+
+                            /*       for(int l =0 ; l < googleLats.size();l++) {
+                                    Log.e("g","g  " + l + " " + googleLats.get(l));
+                             }   */
+
+                            /*    for(int l =0 ; l < googleLngs.size();l++) {
+
+                                } */
 
                                 //LOOP OF CREATING OBJECTS
                                 for (int i = 0; i < names.size(); i++) {
-                                    Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i));
+                                    Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i), googleLats.get(i), googleLngs.get(i));
                                     allStations.add(station);
                                 }
 
@@ -348,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         //Will be called every time location gets updated
-        Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
+        // Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
     }
 
     @Override
@@ -359,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onProviderEnabled(String provider) {//if the user turns on the provider (GPS)
         Toast.makeText(MainActivity.this, " thank you :) ", Toast.LENGTH_SHORT).show();
-        Log.e("GPS", "ENABLED");
+        // Log.e("GPS", "ENABLED");
     }
 
     @Override
@@ -392,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             builder.show();//don't forget otherwise dialog wont show
         } else {
-            Log.e("GPS", "ENABLED");
+            //  Log.e("GPS", "ENABLED");
         }
     }
 
@@ -407,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnowLoc != null) {
-                Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                //  Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
         }
     }
@@ -422,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
                 lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastKnowLoc != null) {
-                    Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                    //   Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
                 }
 
 
@@ -443,8 +473,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.favouriteMenuItem:
-                 Intent fIntent = new Intent(MainActivity.this,FavouritesActivity.class);
-                 startActivity(fIntent);
+                Intent fIntent = new Intent(MainActivity.this, FavouritesActivity.class);
+                startActivity(fIntent);
                 break;
 
             case R.id.exitMenuItem:

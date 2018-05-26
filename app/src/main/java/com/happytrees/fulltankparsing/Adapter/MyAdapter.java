@@ -37,18 +37,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public ArrayList<Station> stations;
     public Context context;
-    // public double latFromMainActivity; -> pass latitude from main activity to adapter using adapter's constructor
-    //public double lngFromMainActivity; -> pass latitude from main activity to adapter using adapter's constructor
+    public double latFromMainActivity;// -> pass latitude  from main activity to adapter using adapter's constructor
+    public double lngFromMainActivity;// -> pass longitude from main activity to adapter using adapter's constructor
 
+    public MyAdapter(ArrayList<Station> stations, Context context, double latFromMainActivity, double lngFromMainActivity) {
+        this.stations = stations;
+        this.context = context;
+        this.latFromMainActivity = latFromMainActivity;
+        this.lngFromMainActivity = lngFromMainActivity;
+    }
 
     public MyAdapter(ArrayList<Station> stations, Context context) {
         this.stations = stations;
         this.context = context;
-        //  latFromMainActivity;
-        // lngFromMainActivity;
-
     }
-
 
     @NonNull
     @Override
@@ -147,7 +149,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     builder.setPositiveButton("Save to Favourites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage);
+                            Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage,currentStation.placeLat,currentStation.placeLng);
                             station.save();
                             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
                             //save to DB

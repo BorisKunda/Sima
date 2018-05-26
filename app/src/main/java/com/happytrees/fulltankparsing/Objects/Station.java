@@ -26,13 +26,6 @@ public class Station extends SugarRecord{
     public Station() {
     }
 
-    public Station(String name, String price1, String price2, String price3, String urlImage) {
-        this.name = name;
-        this.price1 = price1;
-        this.price2 = price2;
-        this.price3 = price3;
-        this.urlImage = urlImage;
-    }
 
 
 }
