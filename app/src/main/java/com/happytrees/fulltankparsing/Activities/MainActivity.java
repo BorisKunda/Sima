@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
                                     String googlePlaceName = names.get(n);
                                     String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
-                                    String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
+                                    String googlePlacesStartEnd = "&key=KEY";
                                     String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
 
 
