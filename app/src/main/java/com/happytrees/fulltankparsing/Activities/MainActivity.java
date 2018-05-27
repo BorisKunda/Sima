@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public Double lng;
 
 
-    //keys -> KEY --> payed key
+
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 
@@ -167,7 +167,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 lng = lastKnowLoc.getLongitude();
 
                                 myAdapter = new MyAdapter(allStations, MainActivity.this, lat, lng);
-                                myRecycler.setAdapter(myAdapter);
+                                myRecycler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myRecycler.setAdapter(myAdapter);
+                                    }
+                                });
+
 
 
                                 //convert lat to String
@@ -252,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
                                     String googlePlaceName = names.get(n);
                                     String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
-                                    String googlePlacesStartEnd = "&key=KEY";
+                                    String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
                                     String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
 
 

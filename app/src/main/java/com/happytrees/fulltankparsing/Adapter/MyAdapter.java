@@ -101,10 +101,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             TextView distanceTV = myView.findViewById(R.id.distanceValTV);
 
 
+            if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")) {
+                distanceTV.setText("unknown");
+            }else{
+                distanceTV.setText(" " + currentStation.placeLat + " " + currentStation.placeLng + " " );
+            }
 
 
 
-            distanceTV.setText("unknown");
 
             ImageView stationIV = myView.findViewById(R.id.stationIV);
 
