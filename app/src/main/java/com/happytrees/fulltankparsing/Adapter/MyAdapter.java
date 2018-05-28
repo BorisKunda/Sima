@@ -22,6 +22,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.happytrees.fulltankparsing.Activities.FavouritesActivity;
+import com.happytrees.fulltankparsing.Activities.MainActivity;
+import com.happytrees.fulltankparsing.Activities.MyMapActivity;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 import com.squareup.picasso.Picasso;
@@ -156,7 +159,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 @Override
                 public void onClick(View v) {
                     //open map
-                    Toast.makeText(context, "click", Toast.LENGTH_SHORT).show();
+                    if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")||(roundedDis>20)){
+                        Toast.makeText(context,"location unknown",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Intent mapIntent = new Intent(context, MyMapActivity.class);
+                        mapIntent.putExtra("ExtraLat", currentStation.placeLat);
+                        mapIntent.putExtra("ExtraLng", currentStation.placeLng);
+                        context.startActivity(mapIntent);
+                    }
+
 
                 }
             });
@@ -184,7 +195,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         public void onClick(DialogInterface dialog, int which) {
                             //begin direction
                             if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")||(roundedDis>20)) {
-                              Toast.makeText(context,"location unkown",Toast.LENGTH_SHORT).show();
+                              Toast.makeText(context,"location unknown",Toast.LENGTH_SHORT).show();
                             }else{
 
                                 String myUrl = "http://maps.google.com/maps?saddr="+latFromMainActivity+","+lngFromMainActivity+"&daddr="+currentStation.placeLat + "," + currentStation.placeLng +"&mode=driving";

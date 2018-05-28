@@ -42,7 +42,8 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".Activities.MainActivity" />
-        <activity android:name=".Activities.FavouritesActivity"></activity>
+        <activity android:name=".Activities.FavouritesActivity" />
+        <activity android:name=".Activities.MyMapActivity"></activity>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
     tools:context=".Activities.SplashScreen">
 
     <ImageView
@@ -14,28 +13,16 @@
         android:layout_centerInParent="true"
         app:srcCompat="@drawable/iconnew" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/bilbo_swash_caps"
-        android:text="Simple To Refuel"
-        android:textColor="#FDD835"
-        android:textSize="50sp" />
-
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:indeterminate="true"
-        android:indeterminateTint="#FDD835"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:indeterminateTint="#FDD835"
         android:indeterminateTintMode="src_atop"
-        android:visibility="visible"
-        />
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="wrap_content"
