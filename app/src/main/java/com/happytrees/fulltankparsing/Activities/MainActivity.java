@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -103,6 +106,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //delete database
         //Station.deleteAll(Station.class);
 
+        //CHANGE ACTION BAR COLOR
+        ActionBar bar =  getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C5CAE9")));
+
+        //hides text from action bar
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         goBtn = findViewById(R.id.GoButton);
 
@@ -257,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
                                     String googlePlaceName = names.get(n);
                                     String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
-                                    String googlePlacesStartEnd = "&key=KEY";
+                                    String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
                                     String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
 
 
