@@ -3,7 +3,9 @@ package com.happytrees.fulltankparsing.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -85,6 +87,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             myView = itemView;
         }
 
+        double roundedDis;
 
         public void bindDataFromArrayToView(final Station currentStation) {
             TextView nameTV = myView.findViewById(R.id.nameTV);
@@ -111,7 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 double placeLatConvertedToDouble = Double.parseDouble(currentStation.placeLat);
                 double placeLngConvertedToDouble = Double.parseDouble(currentStation.placeLng);
                 Location.distanceBetween(latFromMainActivity,lngFromMainActivity,placeLatConvertedToDouble,placeLngConvertedToDouble,distanceResults);//DEFAULT IN KILOMETERS
-                double roundedDis =  (double)Math.round( (distanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
+                roundedDis =  (double)Math.round( (distanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
                 if(roundedDis>20) {
                     distanceTV.setText("distance unknown");
                 }else{
@@ -179,8 +182,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(context, "driver", Toast.LENGTH_SHORT).show();
                             //begin direction
+                            if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")||(roundedDis>20)) {
+                              Toast.makeText(context,"location unkown",Toast.LENGTH_SHORT).show();
+                            }else{
+
+                                String myUrl = "http://maps.google.com/maps?saddr="+latFromMainActivity+","+lngFromMainActivity+"&daddr="+currentStation.placeLat + "," + currentStation.placeLng +"&mode=driving";
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(myUrl));
+                                context.startActivity(intent);
+                            }
+
                         }
                     });
 
