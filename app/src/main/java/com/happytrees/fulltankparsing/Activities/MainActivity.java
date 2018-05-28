@@ -47,6 +47,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 //CHECK THAT KEYS WORK
+//gps bug
 //HOVOT :
 //fix sugar orm
 //map onClick
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         goBtn = findViewById(R.id.GoButton);
-        cityET = findViewById(R.id.cityET);
+
 
 
         myRecycler = findViewById(R.id.MyRecyclerView);
@@ -147,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cityET.length() != 0) {
                     //opening new thread for using network
                     progressDialog.show();//SHOW PROGRESS BAR BEFORE CALL
                     new Thread(new Runnable() {
@@ -156,8 +156,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         @Override
                         public void run() {
                             Log.e("app", "step 1");
-                            String city = cityET.getText().toString();
-                            String cityImproved = city.replace(" ", "%20");
+                            String cityImproved = "jerusalem";
                             // String fullUrl = START_STRING + cityImproved + END_STRING;
                             String fullUrl;
 
@@ -365,16 +364,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 public void run() {
                                     myAdapter.notifyDataSetChanged();
                                     progressDialog.dismiss();//dismiss progress bar after call was completed
-                                    cityET.setText(" ");
+
 
                                 }
                             });
                         }
                     }).start();
 
-                } else {
-                    Toast.makeText(MainActivity.this, "write something", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
