@@ -50,6 +50,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 //CHECK THAT KEYS WORK
+//create key for sima
 //gps bug
 //HOVOT :
 //fix sugar orm
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public Double lng;
 
 
-
+    //KEY -> boriskunda@gmail.com
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
 
 

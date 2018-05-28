@@ -1,5 +1,8 @@
 package com.happytrees.fulltankparsing.Activities;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +23,14 @@ public class FavouritesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
+
+
+        //CHANGE ACTION BAR COLOR
+        ActionBar bar =  getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C5CAE9")));
+
+        //hides text from action bar
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         final List<Station> allFavourites = Station.listAll(Station.class);
         RecyclerView recyclerView = findViewById(R.id.recyclerFavourites);
