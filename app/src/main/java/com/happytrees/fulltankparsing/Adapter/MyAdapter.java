@@ -3,6 +3,7 @@ package com.happytrees.fulltankparsing.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public Context context;
     public double latFromMainActivity;// -> pass latitude  from main activity to adapter using adapter's constructor
     public double lngFromMainActivity;// -> pass longitude from main activity to adapter using adapter's constructor
+    public float []  distanceResults = new float[10];//10 random number.you need any number higher than 3
 
     public MyAdapter(ArrayList<Station> stations, Context context, double latFromMainActivity, double lngFromMainActivity) {
         this.stations = stations;
@@ -106,6 +108,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")) {
                 distanceTV.setText("distance unknown");
             }else{
+                double placeLatConvertedToDouble = Double.parseDouble(currentStation.placeLat);
+                double placeLngConvertedToDouble = Double.parseDouble(currentStation.placeLng);
+                Location.distanceBetween(latFromMainActivity,lngFromMainActivity,placeLatConvertedToDouble,placeLngConvertedToDouble,distanceResults);//DEFAULT IN KILOMETERS
                 distanceTV.setText(" " + currentStation.placeLat + " " + currentStation.placeLng + " " );
             }
 
