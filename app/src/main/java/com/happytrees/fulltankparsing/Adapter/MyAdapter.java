@@ -21,6 +21,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
+import com.squareup.picasso.Picasso;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,7 +104,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
             if(currentStation.placeLat.contains("unknown")||currentStation.placeLng.contains("unknown")) {
-                distanceTV.setText("unknown");
+                distanceTV.setText("distance unknown");
             }else{
                 distanceTV.setText(" " + currentStation.placeLat + " " + currentStation.placeLng + " " );
             }
@@ -117,7 +119,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             progressBar.setVisibility(View.VISIBLE);////make progress bar visible
 
 
-            Glide.with(context).load(currentStation.urlImage).listener(new RequestListener<String, GlideDrawable>() {
+
+
+            Glide.with(context).load(currentStation.urlImage).override(500, 500)
+                    .centerCrop() .listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     progressBar.setVisibility(View.GONE);//removes progress bar if there was exception

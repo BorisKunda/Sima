@@ -52,6 +52,7 @@ import java.util.ArrayList;
 //CHECK THAT KEYS WORK
 //create key for sima
 //gps bug
+//try app in different devices
 //HOVOT :
 //fix sugar orm
 //map onClick
