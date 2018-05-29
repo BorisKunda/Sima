@@ -180,7 +180,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     //alert dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("which one suits you best?");//dialog message
-                    builder.setPositiveButton("Save to Favourites", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("Add to Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage,currentStation.placeLat,currentStation.placeLng);
@@ -190,7 +190,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         }
                     });
 
-                    builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
+                    builder.setNeutralButton("Go to destination", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //begin direction

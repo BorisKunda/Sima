@@ -128,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //PROGRESS BAR
         // Set up progress before call
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Its loading....");
-        progressDialog.setTitle("ProgressDialog bar ");
+        progressDialog.setMessage("loading....");
+       // progressDialog.setTitle("ProgressDialog bar ");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 
@@ -151,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnowLoc != null) {
-                // Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                lat = lastKnowLoc.getLatitude();
+                lng = lastKnowLoc.getLongitude();
+                Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
 
 
@@ -189,8 +191,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
                                 //convert lat to String
-                                String myLat = String.valueOf(lat);
-                                String myLng = String.valueOf(lng);
+                              String myLat =  String.valueOf(lat);
+                              String myLng =  String.valueOf(lng);
                                 fullUrl = START_STRING + cityImproved + STRING1 + myLat + STRING2 + myLng + STRING3;
 
 
@@ -401,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         //Will be called every time location gets updated
-        // Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
+         Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
     }
 
     @Override
@@ -460,7 +462,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnowLoc != null) {
-                //  Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                lat = lastKnowLoc.getLatitude();
+                lng = lastKnowLoc.getLongitude();
+                  Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
             }
         }
     }
@@ -475,7 +479,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
                 lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastKnowLoc != null) {
-                    //   Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
+                    lat = lastKnowLoc.getLatitude();
+                    lng = lastKnowLoc.getLongitude();
+                       Log.e("location ", " location   " + lastKnowLoc.getLatitude() + "  " + lastKnowLoc.getLongitude());
                 }
 
 
