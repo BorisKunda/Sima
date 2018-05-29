@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         //delete database
-        Station.deleteAll(Station.class);
+        //Station.deleteAll(Station.class);
 
         //CHANGE ACTION BAR COLOR
         ActionBar bar =  getSupportActionBar();

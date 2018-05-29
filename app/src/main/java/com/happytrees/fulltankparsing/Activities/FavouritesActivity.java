@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.Toast;
 
 import com.happytrees.fulltankparsing.Adapter.MyAdapter;
 import com.happytrees.fulltankparsing.Adapter.MyFAdapter;
@@ -43,8 +45,37 @@ public class FavouritesActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(FavouritesActivity.this);//layout manager defines look of RecyclerView -- > grid,list
         recyclerView.setLayoutManager(layoutManager);
         //adapter
-        MyFAdapter myFAdapter = new MyFAdapter((ArrayList<Station>) allFavourites,FavouritesActivity.this,latPassedFromMain,lngPassedFromMain);
+        final MyFAdapter myFAdapter = new MyFAdapter((ArrayList<Station>) allFavourites,FavouritesActivity.this,latPassedFromMain,lngPassedFromMain);
         recyclerView.setAdapter(myFAdapter);
+
+
+
+        //REMOVE ON SWEEP
+        //INTERFACE ALLOWING LISTENING TO SWEEP ACTIONS
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {//REMOVE ON  LEFT/RIGHT SWIPE
+                //fetch item position
+                int position = viewHolder.getAdapterPosition();
+                //remove item from database
+                Station fStation = Station.findById(Station.class,allFavourites.get(position).getId());
+                fStation.delete();
+                //remove from list
+                allFavourites.remove(position);
+                myFAdapter.notifyItemRemoved(position);
+                myFAdapter.notifyItemRangeChanged(position,allFavourites.size());//we used  "getAdapterPosition()" to get item  position (int)
+
+                Toast.makeText(FavouritesActivity.this,"item removed",Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView); //set swipe to recylcerview
 
     }
 }
