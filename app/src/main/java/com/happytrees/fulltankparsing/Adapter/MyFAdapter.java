@@ -1,7 +1,11 @@
 package com.happytrees.fulltankparsing.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.happytrees.fulltankparsing.Activities.MyMapActivity;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 
@@ -137,6 +143,55 @@ public class MyFAdapter extends RecyclerView.Adapter<MyFAdapter.MyFViewHolder> {
 
                 }
             }).into(stationFIV);//SET IMAGE THROUGH GLIDE
+
+            myFView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //open map
+                    if(currentFStation.placeLat.contains("unknown")||currentFStation.placeLng.contains("unknown")){
+                        Toast.makeText(fContext,"location unknown",Toast.LENGTH_SHORT).show();
+                    }else{
+                        Intent mapIntent = new Intent(fContext, MyMapActivity.class);
+                        mapIntent.putExtra("ExtraLat", currentFStation.placeLat);
+                        mapIntent.putExtra("ExtraLng", currentFStation.placeLng);
+                        fContext.startActivity(mapIntent);
+                    }
+                }
+            });
+
+            myFView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(fContext);
+                    builder.setMessage("which one suits you best?");//dialog message
+
+                    builder.setNeutralButton("Go to destination", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //begin direction
+                            if(currentFStation.placeLat.contains("unknown")||currentFStation.placeLng.contains("unknown")) {
+                                Toast.makeText(fContext,"location unknown",Toast.LENGTH_SHORT).show();
+                            }else{
+
+                                String myUrl = "http://maps.google.com/maps?saddr="+ fLatFromFavActivity+","+fLngFromFavActivity+"&daddr="+currentFStation.placeLat + "," + currentFStation.placeLng +"&mode=driving";
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(myUrl));
+                                fContext.startActivity(intent);
+                            }
+
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(fContext, "closed", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                    return true ;
+                }
+            });
         }
     }
 
