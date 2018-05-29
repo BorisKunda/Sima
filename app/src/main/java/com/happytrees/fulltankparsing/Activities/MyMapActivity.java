@@ -42,27 +42,7 @@ public class MyMapActivity extends AppCompatActivity {
 
 
 
-/*
-   @Override
-    public void changeFragments(double lat, double lng, final String name) {
-        customLatLng = new LatLng(lat,lng);
-        //CREATES MAP FRAGMENT ->  no need to create java,xml file for it .No need in creating GPS object and make Location Permission in manifest.Only key cause you using google API
-        MapFragment mapFragment = new MapFragment();
-        if(isTablet()) {//isTablet = true .Means device used xlarge xml layout of MainActivity,due to device large screen(tablet)
-            getFragmentManager().beginTransaction().addToBackStack("adding map").replace(R.id.ExtraContainer, mapFragment).commit(); //we add MapFragment  only  to sub layout of xlarge MainActivity called ExtraContainer ,and only if its not null(its null if device detected normal size screen)
-        }else{
-            getFragmentManager().beginTransaction().addToBackStack("replacing").replace(R.id.MainContainer, mapFragment).commit();//replaces current Fragment with mapFragment.
-        }
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                googleMap.addMarker(new MarkerOptions().position(customLatLng).title(name));//add marker
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(customLatLng, 17));//v --> is zoom.0 is no zoom
-            }
-        });
-    }
- */
+
 
     }
 }
