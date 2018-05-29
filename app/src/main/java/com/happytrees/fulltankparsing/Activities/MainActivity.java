@@ -175,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             // String fullUrl = START_STRING + cityImproved + END_STRING;
                             String fullUrl;
 
+
+
                             if (lastKnowLoc != null) {
                                 //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
                                 lat = lastKnowLoc.getLatitude();
