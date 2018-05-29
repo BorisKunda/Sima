@@ -49,6 +49,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+//when gps is turned off last known location is deleted
+
 //CHECK THAT KEYS WORK
 //create key for sima
 //gps bug
@@ -195,6 +197,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             } else {
                                 //if there is no latitude and longitude received use alternative link  --> https://www.fulltank.co.il/?s=PLACE&latitude=undefined&longitude=undefined&sort=cheapest
                                 fullUrl = START_STRING + cityImproved + END_STRING;
+                                myAdapter = new MyAdapter(allStations, MainActivity.this);
+                                myRecycler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                       myRecycler.setAdapter(myAdapter);
+                                    }
+                                });
                             }
 
                             //downloading html and keeping it under "line" variable
