@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     Location lastKnowLoc;
     public Double lat;
     public Double lng;
-
+    public boolean mLocationPermissionsGranted = false;
 
     //KEY -> boriskunda@gmail.com
     //https://www.fulltank.co.il/?s=jerusalem&latitude=31.8055944&longitude=35.2298522&sort=cheapest
@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     new Thread(new Runnable() {
                         MyAdapter myAdapter;
 
+                        @SuppressLint("MissingPermission")
                         @Override
                         public void run() {
                             Log.e("app", "step 1");
@@ -175,7 +176,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             // String fullUrl = START_STRING + cityImproved + END_STRING;
                             String fullUrl;
 
-
+                          if( mLocationPermissionsGranted){
+                              locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
+                              lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                          }
 
                             if (lastKnowLoc != null) {
                                 //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
@@ -405,7 +409,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         //Will be called every time location gets updated
-         Log.e("location", "lat: " + location.getLatitude() + " lon:" + location.getLongitude());
+        if(mLocationPermissionsGranted){
+            lat =location.getLatitude();
+            lng = location.getLongitude();
+        }
     }
 
     @Override
@@ -461,6 +468,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
         } else {
             //if there is already permission granted request location update
+            mLocationPermissionsGranted=true;
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnowLoc != null) {
@@ -478,6 +486,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (requestCode == REQUEST_CODE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //if there is  permission granted request location update
+                mLocationPermissionsGranted = true;
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
                 lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastKnowLoc != null) {
