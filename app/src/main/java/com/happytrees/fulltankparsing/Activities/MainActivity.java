@@ -53,29 +53,11 @@ import java.util.ArrayList;
 
 //CHECK THAT KEYS WORK
 //create key for sima
-//gps bug
 //try app in different devices
 //HOVOT :
-//fix sugar orm
-//map onClick
-//driver navigation
-//maybe address
-//fresh key
-//encode decode
 //onNullInstance
 //close keyboard after search
-//one adapter for multiple adapters
-//icon
 //hebrew support
-//slow recycler view --> static variable?geocoder?
-//+ instead of %20
-//gradient
-//use icons instead part of text in order to increase font
-//beutiful buttons
-//String Buffer Alternatives
-//picasso vs glide
-//make cards grey
-//covert your lat lng to city name
 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten%20%D7%A8%D7%9E%D7%9C%D7%94&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -108,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         //delete database
-        //Station.deleteAll(Station.class);
+        Station.deleteAll(Station.class);
 
         //CHANGE ACTION BAR COLOR
         ActionBar bar =  getSupportActionBar();
@@ -516,6 +498,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         switch (item.getItemId()) {
             case R.id.favouriteMenuItem:
                 Intent fIntent = new Intent(MainActivity.this, FavouritesActivity.class);
+                if(lastKnowLoc==null){
+                    String unkown = "unknown";
+                    fIntent.putExtra("latMainToFav",unkown);
+                    fIntent.putExtra("lngMainToFav",unkown);
+                }else{
+                   double latNext = lastKnowLoc.getLatitude();
+                   double lngNext = lastKnowLoc.getLongitude();
+                   String stringMainLatToFav = String.valueOf(latNext);
+                   String stringMainLngToFav = String.valueOf(lngNext);
+                    fIntent.putExtra("latMainToFav",stringMainLatToFav);
+                    fIntent.putExtra("lngMainToFav",stringMainLngToFav);
+                }
                 startActivity(fIntent);
                 break;
 
