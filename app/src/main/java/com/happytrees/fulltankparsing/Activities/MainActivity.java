@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             //check location permission
             checkLocationPermission();
         } else {
+            mLocationPermissionsGranted = true;
             //no need in permission  check  proceed to check location
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
             lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                           if( mLocationPermissionsGranted){
                               locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
                               lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                             // Log.e("p","p");
                           }
 
                             if (lastKnowLoc != null) {
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                     }
                                 });
 
-
+                             //   Log.e("p","p");
 
                                 //convert lat to String
                               String myLat =  String.valueOf(lat);
