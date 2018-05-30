@@ -163,7 +163,6 @@ public class MyFAdapter extends RecyclerView.Adapter<MyFAdapter.MyFViewHolder> {
                 @Override
                 public boolean onLongClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(fContext);
-                    builder.setMessage("which one suits you best?");//dialog message
 
                     builder.setNeutralButton("Go to destination", new DialogInterface.OnClickListener() {
                         @Override
@@ -181,10 +180,9 @@ public class MyFAdapter extends RecyclerView.Adapter<MyFAdapter.MyFViewHolder> {
                         }
                     });
 
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("exit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(fContext, "closed", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });

@@ -179,7 +179,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     //DIALOG - SAVE TO FAVOURITES OR OPEN NAVIGATION
                     //alert dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("which one suits you best?");//dialog message
                     builder.setPositiveButton("Add to Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -206,10 +205,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         }
                     });
 
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("exit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(context, "closed", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });
