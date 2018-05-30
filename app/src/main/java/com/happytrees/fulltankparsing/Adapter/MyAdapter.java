@@ -225,12 +225,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         }
                     });
 
-                    builder.setNegativeButton("exit", new DialogInterface.OnClickListener() {
+            /*        builder.setNegativeButton("exit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    });
+                    }); */
                     builder.show();
                     return true;
                 }
