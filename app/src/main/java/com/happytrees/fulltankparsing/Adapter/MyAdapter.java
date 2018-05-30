@@ -182,9 +182,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     builder.setPositiveButton("Add to Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage,currentStation.placeLat,currentStation.placeLng);
+                           if(Station.find(Station.class,"Name =" + "'" + currentStation.name + "'").isEmpty()){//if it does empty there is no already existing record with this name you can proceed to save
+                        //   Log.e("ok to save","ok to save");
+                               Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage,currentStation.placeLat,currentStation.placeLng);
+                               station.save();
+                               Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+
+                          }else{
+                              Toast.makeText(context,"can't save duplicate locations",Toast.LENGTH_SHORT).show();
+
+                           }
+
+
+                                    //check if specific record already exists in database
+   /*    if( Book.find(Book.class," TITLE = 'Harry potter' ").isEmpty()){// if row with title HarryPotter  returns true on isEmpty method then there no such row in database
+         Log.e("true","true");
+       }else{
+           Log.e("false ","false");
+       }  */
+
+
+                       /*     Station station = new Station(currentStation.name, currentStation.price1, currentStation.price2, currentStation.price3, currentStation.urlImage,currentStation.placeLat,currentStation.placeLng);
                             station.save();
-                            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();  */
                             //save to DB
                         }
                     });
