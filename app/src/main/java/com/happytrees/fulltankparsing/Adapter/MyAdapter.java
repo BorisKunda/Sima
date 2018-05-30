@@ -118,7 +118,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 double placeLngConvertedToDouble = Double.parseDouble(currentStation.placeLng);
                 Location.distanceBetween(latFromMainActivity,lngFromMainActivity,placeLatConvertedToDouble,placeLngConvertedToDouble,distanceResults);//DEFAULT IN KILOMETERS
                 roundedDis =  (double)Math.round( (distanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
-                if(roundedDis>20) {
+                if(roundedDis>70) {
                     distanceTV.setText("distance unknown");
                 }else{
                     distanceTV.setText(roundedDis + " KM" );

@@ -108,7 +108,7 @@ public class MyFAdapter extends RecyclerView.Adapter<MyFAdapter.MyFViewHolder> {
                 double fLngFromFavActivityConverted = Double.parseDouble(fLngFromFavActivity);
               Location.distanceBetween(fLatFromFavActivityConverted,fLngFromFavActivityConverted,placeLatConvertedToDouble,placeLngConvertedToDouble,fDistanceResults);//DEFAULT IN KILOMETERS
                roundedDis =  (double)Math.round( (fDistanceResults[0]/1000 ) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
-                if(roundedDis>20) {
+                if(roundedDis>70) {
                     distanceTV.setText("distance unknown");
                 }else{
                     distanceTV.setText(roundedDis + " KM" );
