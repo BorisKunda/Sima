@@ -5,24 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.FavouritesActivity">
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/MyRecyclerView"
+        android:id="@+id/recyclerFavourites"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="480dp"
-       >
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
     </android.support.v7.widget.RecyclerView>
-
-
-    <Button
-        android:id="@+id/GoButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="search"
-        android:theme="@style/MaterialButton.Blue" />
-
 
 </RelativeLayout>
