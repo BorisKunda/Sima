@@ -48,6 +48,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -146,123 +148,121 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
 
-
-
         //FIX -> don't show results if location null
         goBtn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                    //////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////
 
 
-                    //opening new thread for using network
-                    progressDialog.show();//SHOW PROGRESS BAR BEFORE CALL
-                    new Thread(new Runnable() {
-                        MyAdapter myAdapter;
+                //opening new thread for using network
+                progressDialog.show();//SHOW PROGRESS BAR BEFORE CALL
+                new Thread(new Runnable() {
+                    MyAdapter myAdapter;
 
-                        @SuppressLint("MissingPermission")
-                        @Override
-                        public void run() {
-                            Log.e("app", "step 1");
-                            String cityImproved = "jerusalem";
-                            // String fullUrl = START_STRING + cityImproved + END_STRING;
-                            String fullUrl;
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void run() {
+                        Log.e("app", "step 1");
+                        String cityImproved = "jerusalem";
+                        // String fullUrl = START_STRING + cityImproved + END_STRING;
+                        String fullUrl;
 
-                            Log.e("p", "p");
+                        Log.e("p", "p");
 
-                            if (mLocationPermissionsGranted) {
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
-                                lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                if (lastKnowLoc != null) {
-                                    lat = lastKnowLoc.getLatitude();
-                                    lng = lastKnowLoc.getLongitude();
-                                    historyLat = lat;
-                                    historyLat = lng;
-                                }
-                                // Log.e("p","p");
-                            }
-
+                        if (mLocationPermissionsGranted) {
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, MainActivity.this);
+                            lastKnowLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (lastKnowLoc != null) {
-                                //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
                                 lat = lastKnowLoc.getLatitude();
                                 lng = lastKnowLoc.getLongitude();
                                 historyLat = lat;
-                                historyLng = lng;
+                                historyLat = lng;
+                            }
+                            // Log.e("p","p");
+                        }
 
-                                myAdapter = new MyAdapter(allStations, MainActivity.this, lat, lng);
-                                myRecycler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        myRecycler.setAdapter(myAdapter);
-                                    }
-                                });
+                        if (lastKnowLoc != null) {
+                            //if there was received location use this link --> https://www.fulltank.co.il/?s=PLACE&latitude=VALUE&longitude=VALUE&sort=cheapest
+                            lat = lastKnowLoc.getLatitude();
+                            lng = lastKnowLoc.getLongitude();
+                            historyLat = lat;
+                            historyLng = lng;
 
-
-                                //convert lat to String
-                                String myLat = String.valueOf(lat);
-                                String myLng = String.valueOf(lng);
-                                fullUrl = START_STRING + cityImproved + STRING1 + myLat + STRING2 + myLng + STRING3;
-
-
-                            } else {
-                                if ((historyLat != null) && (historyLng != null)) {
-                                    fullUrl = START_STRING + cityImproved + STRING1 + historyLat + STRING2 + historyLng + STRING3;
-                                } else {
-                                    //if there is no latitude and longitude received use alternative link  --> https://www.fulltank.co.il/?s=PLACE&latitude=undefined&longitude=undefined&sort=cheapest
-                                    fullUrl = START_STRING + cityImproved + END_STRING;
+                            myAdapter = new MyAdapter(allStations, MainActivity.this, lat, lng);
+                            myRecycler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myRecycler.setAdapter(myAdapter);
                                 }
+                            });
 
-                                myAdapter = new MyAdapter(allStations, MainActivity.this);
-                                myRecycler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        myRecycler.setAdapter(myAdapter);
-                                    }
-                                });
+
+                            //convert lat to String
+                            String myLat = String.valueOf(lat);
+                            String myLng = String.valueOf(lng);
+                            fullUrl = START_STRING + cityImproved + STRING1 + myLat + STRING2 + myLng + STRING3;
+
+
+                        } else {
+                            if ((historyLat != null) && (historyLng != null)) {
+                                fullUrl = START_STRING + cityImproved + STRING1 + historyLat + STRING2 + historyLng + STRING3;
+                            } else {
+                                //if there is no latitude and longitude received use alternative link  --> https://www.fulltank.co.il/?s=PLACE&latitude=undefined&longitude=undefined&sort=cheapest
+                                fullUrl = START_STRING + cityImproved + END_STRING;
                             }
 
-                            //downloading html and keeping it under "line" variable
-                            InputStream is = null;
-                            try {
-                                URL url = new URL(fullUrl);
-                                is = url.openStream();  // throws an IOException
-                                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                                String currentLine;
-                                String line = " ";
-                                //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
-                                while ((currentLine = br.readLine()) != null) {
-                                    line += currentLine;
+                            myAdapter = new MyAdapter(allStations, MainActivity.this);
+                            myRecycler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myRecycler.setAdapter(myAdapter);
                                 }
+                            });
+                        }
 
-                                Log.e("app", "step 2");
-                                //parsing html
-                                Document parsedDocument = Jsoup.parse(line);
-                                //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
+                        //downloading html and keeping it under "line" variable
+                        InputStream is = null;
+                        try {
+                            URL url = new URL(fullUrl);
+                            is = url.openStream();  // throws an IOException
+                            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                            String currentLine;
+                            String line = " ";
+                            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
+                            while ((currentLine = br.readLine()) != null) {
+                                line += currentLine;
+                            }
 
-                                //NAMES
-                                Elements myElements = parsedDocument.select("h2 > a");
-                                final List<String> names = new ArrayList<>();
-                                for (Element myElement : myElements) {
-                                    //getting station's name
-                                    String name = myElement.ownText();
-                                    // Log.e("name","name :  " + name);
-                                    //keeping all names under array of names
-                                    names.add(name);
-                                }
+                            Log.e("app", "step 2");
+                            //parsing html
+                            Document parsedDocument = Jsoup.parse(line);
+                            //selecting names from  html -->    <h2><a href="https://www.fulltank.co.il/station/296/דלק/זטלר">NAME</a></h2>
 
-                                //PRICES
-                                //<div class=""><span class="search-data-num">6.37</span> ₪</div>
-                                //selecting prices from html
-                                Elements pricesElements = parsedDocument.select("span.search-data-num");
-                                final ArrayList<String> prices = new ArrayList<>();
-                                for (Element priceElement : pricesElements) {
-                                    String price = priceElement.ownText();
-                                    //keeping all prices under array of prices
-                                    prices.add(price);
-                                }
+                            //NAMES
+                            Elements myElements = parsedDocument.select("h2 > a");
+                            final List<String> names = new ArrayList<>();
+                            for (Element myElement : myElements) {
+                                //getting station's name
+                                String name = myElement.ownText();
+                                // Log.e("name","name :  " + name);
+                                //keeping all names under array of names
+                                names.add(name);
+                            }
 
-                                //IMAGES
+                            //PRICES
+                            //<div class=""><span class="search-data-num">6.37</span> ₪</div>
+                            //selecting prices from html
+                            Elements pricesElements = parsedDocument.select("span.search-data-num");
+                            final ArrayList<String> prices = new ArrayList<>();
+                            for (Element priceElement : pricesElements) {
+                                String price = priceElement.ownText();
+                                //keeping all prices under array of prices
+                                prices.add(price);
+                            }
+
+                            //IMAGES
                                 /*
                                   <figure class="search-figure">
                                            <a href="https://www.fulltank.co.il/station/415/Ten/ירושלים%20תלפיות"><img src="https://www.fulltank.co.il/wp-content/uploads/2015/08/TenPT@2x.png" width="267" height="193"></a>
@@ -270,147 +270,151 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                                  */
 
-                                Elements urlImages = parsedDocument.select("figure.search-figure>a>img");
-                                final ArrayList<String> urlImgs = new ArrayList<>();
-                                for (Element urlElement : urlImages) {
-                                    //getting value  --> ("src") <-- <img src="https://maps.googleapis.com/maps/api/streetview?size=260x150&location=31.749428,35.206287" >
-                                    String urlImg = urlElement.attr("src");
-                                    urlImgs.add(urlImg);
-                                }
+                            Elements urlImages = parsedDocument.select("figure.search-figure>a>img");
+                            final ArrayList<String> urlImgs = new ArrayList<>();
+                            for (Element urlElement : urlImages) {
+                                //getting value  --> ("src") <-- <img src="https://maps.googleapis.com/maps/api/streetview?size=260x150&location=31.749428,35.206287" >
+                                String urlImg = urlElement.attr("src");
+                                urlImgs.add(urlImg);
+                            }
 
-                                //delete old results if exist
-                                if (allStations != null) {
-                                    allStations.clear();
-                                }
+                            //delete old results if exist
+                            if (allStations != null) {
+                                allStations.clear();
+                            }
 
-                                Log.e("app", "step 3");
+                            Log.e("app", "step 3");
 
 
 //                                final ArrayList<String> googleLats = new ArrayList<>();
 //                                final ArrayList<String> googleLngs = new ArrayList<>();
-                                //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
+                            //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 
 
-                                for (int n = 0; n < names.size(); n++) {
-                                    //run on array of names ,insert name into google link respectively
-                                    /////////////////////////////////////////////////
-                                    final int myIndex = n;
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
-                                            String googlePlaceName = names.get(myIndex);
-                                            String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
-                                            String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
-                                            String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
+                            for (int n = 0; n < names.size(); n++) {
+                                //run on array of names ,insert name into google link respectively
+                                /////////////////////////////////////////////////
+                                final int myIndex = n;
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
+                                        String googlePlaceName = names.get(myIndex);
+                                        String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
+                                        String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
+                                        String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
 
 
-                                            Log.e("app", "step 4");
+                                        Log.e("app", "step 4");
 
-                                            //download http from url and keep it under String
-                                            InputStream inputStreamFromGoogle = null;
+                                        //download http from url and keep it under String
+                                        InputStream inputStreamFromGoogle = null;
 
+                                        try {
+                                            URL googleUrl = new URL(fullGoogleLink);
+                                            inputStreamFromGoogle = googleUrl.openStream();
+                                            BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
+                                            String currentLineFromGoogle;
+                                            String lineGoogle = " ";
+                                            //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
+                                            while ((currentLineFromGoogle = googleBufferedReader.readLine()) != null) {
+                                                lineGoogle += currentLineFromGoogle;
+                                            }
+
+                                            Log.e("url", "url " + myIndex);
+                                            String latFromJson;
+                                            String lngFromJson;
+                                            //json parsing
                                             try {
-                                                URL googleUrl = new URL(fullGoogleLink);
-                                                inputStreamFromGoogle = googleUrl.openStream();
-                                                BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
-                                                String currentLineFromGoogle;
-                                                String lineGoogle = " ";
-                                                //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
-                                                while ((currentLineFromGoogle = googleBufferedReader.readLine()) != null) {
-                                                    lineGoogle += currentLineFromGoogle;
-                                                }
-
-                                                Log.e("url", "url " + myIndex);
-                                                String latFromJson;
-                                                String lngFromJson;
-                                                //json parsing
-                                                try {
-                                                    //JSON parsing
-                                                    JSONObject jsonObjectContainer = new JSONObject(lineGoogle);
-                                                    JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
-                                                    JSONObject resultObject = jsonArrayResults.getJSONObject(0);
-                                                    JSONObject geometryObject = resultObject.getJSONObject("geometry");
-                                                    JSONObject locationObject = geometryObject.getJSONObject("location");
+                                                //JSON parsing
+                                                JSONObject jsonObjectContainer = new JSONObject(lineGoogle);
+                                                JSONArray jsonArrayResults = jsonObjectContainer.getJSONArray("results");//"results" is name of array of movies in json link
+                                                JSONObject resultObject = jsonArrayResults.getJSONObject(0);
+                                                JSONObject geometryObject = resultObject.getJSONObject("geometry");
+                                                JSONObject locationObject = geometryObject.getJSONObject("location");
                                                 Log.e("TEST", "TEST: " + myIndex);
 
-                                                    if (locationObject != null) {
-                                                        latFromJson = locationObject.getString("lat");
-                                                        lngFromJson = locationObject.getString("lng");
-                                                    } else {
-                                                        latFromJson = "unknown";
-                                                        lngFromJson = "unknown";
-                                                    }
-                                                    Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson,lngFromJson);
-                                                    allStations.add(station);
-
-                                                    Log.e("json", "json" + myIndex);
-                                                    Log.e("ALL STATIONS SIZE: ", "size: " + allStations.size());
-                                                    Log.e("ALL NAMES SIZE: ", "size: " + names.size());
-
-
-                                                    if (allStations.size() == names.size()) {
-                                                        myRecycler.post(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                for (int i = allStations.size() - 1; i >= 0; i--) {
-                                                                    if (allStations.get(i).placeLat.contains("unknown")) {
-                                                                        allStations.remove(i);
-                                                                    }
-                                                                }
-                                                                myAdapter.notifyDataSetChanged();
-                                                                progressDialog.dismiss();//dismiss progress bar after call was completed
-                                                            }
-                                                        });
-                                                    }
-
-                                                } catch (JSONException e) {
+                                                if (locationObject != null) {
+                                                    latFromJson = locationObject.getString("lat");
+                                                    lngFromJson = locationObject.getString("lng");
+                                                } else {
                                                     latFromJson = "unknown";
                                                     lngFromJson = "unknown";
-                                                    Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson,lngFromJson);
-                                                    allStations.add(station);
-                                                    Log.e("JsonException", "JsonException" + myIndex);
+                                                }
+                                                Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson, lngFromJson);
+                                                allStations.add(station);
 
+
+                                                if (allStations.size() == names.size()) {
+                                                    myRecycler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            for (int i = allStations.size() - 1; i >= 0; i--) {
+                                                                if (allStations.get(i).placeLat.contains("unknown")) {
+                                                                    allStations.remove(i);
+                                                                }
+                                                            }
+                                                            Collections.sort(allStations, new Comparator<Station>() {
+                                                                @Override
+                                                                public int compare(Station s1, Station s2) {
+                                                                    if (getDistanceInKM(s1, lat, lng) > getDistanceInKM(s2, lat, lng))
+                                                                        return 1;
+                                                                    return -1;
+                                                                }
+                                                            });
+                                                            myAdapter.notifyDataSetChanged();
+                                                            progressDialog.dismiss();//dismiss progress bar after call was completed
+                                                        }
+                                                    });
                                                 }
 
-
-                                            } catch (MalformedURLException mue) {
-                                                mue.printStackTrace();
-                                                Log.e("MalformedURLException", "MalformedURLException");
-                                            } catch (IOException ioe) {
-                                                Log.e("IOException", "IOException1 ");
-                                                ioe.printStackTrace();
-                                            } finally {
-                                                try {
-                                                    if (inputStreamFromGoogle != null)
-                                                        inputStreamFromGoogle.close();
-                                                } catch (IOException ioe) {
-                                                    Log.e("IOException", "IOException2 ");
-                                                }
+                                            } catch (JSONException e) {
+                                                latFromJson = "unknown";
+                                                lngFromJson = "unknown";
+                                                Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson, lngFromJson);
+                                                allStations.add(station);
+                                                Log.e("JsonException", "JsonException" + myIndex);
 
                                             }
-                                         Log.e("T","T  " + myIndex);
+
+
+                                        } catch (MalformedURLException mue) {
+                                            mue.printStackTrace();
+                                            Log.e("MalformedURLException", "MalformedURLException");
+                                        } catch (IOException ioe) {
+                                            Log.e("IOException", "IOException1 ");
+                                            ioe.printStackTrace();
+                                        } finally {
+                                            try {
+                                                if (inputStreamFromGoogle != null)
+                                                    inputStreamFromGoogle.close();
+                                            } catch (IOException ioe) {
+                                                Log.e("IOException", "IOException2 ");
+                                            }
+
                                         }
-                                    }).start();
-                                }
+                                        Log.e("T", "T  " + myIndex);
+                                    }
+                                }).start();
+                            }
 
 //                                Log.e("arraylat", "arraylat" + googleLats);
 //                                Log.e("arraylat", "arraylat" + googleLngs);
 
-                            } catch (MalformedURLException mue) {
-                                mue.printStackTrace();
+                        } catch (MalformedURLException mue) {
+                            mue.printStackTrace();
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        } finally {
+                            try {
+                                if (is != null)
+                                    is.close();
                             } catch (IOException ioe) {
-                                ioe.printStackTrace();
-                            } finally {
-                                try {
-                                    if (is != null)
-                                        is.close();
-                                } catch (IOException ioe) {
-                                }
-//////////////////////////////////////////////////////////////////////////
                             }
+//////////////////////////////////////////////////////////////////////////
+                        }
 
-                            //post to UI (main thread) through post method .without post method there will be CalledFromWrongThreadException
+                        //post to UI (main thread) through post method .without post method there will be CalledFromWrongThreadException
                       /*      myRecycler.post(new Runnable() {//alternatively use  runOnUiThread();
                                 @Override
                                 public void run() {
@@ -426,8 +430,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                                 }
                             }); */
-                        }
-                    }).start();
+                    }
+                }).start();
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -573,6 +577,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return true;
     }
 
+
+    private static double getDistanceInKM(Station s, double myLat, double myLng) {
+        float[] fDistanceResults = new float[10];
+        double placeLatConvertedToDouble = Double.parseDouble(s.placeLat);
+        double placeLngConvertedToDouble = Double.parseDouble(s.placeLng);
+        Location.distanceBetween(myLat, myLng, placeLatConvertedToDouble, placeLngConvertedToDouble, fDistanceResults);//DEFAULT IN KILOMETERS
+        return (double) Math.round((fDistanceResults[0] / 1000) * 100d) / 100d;//number of zeros must be same in and outside parenthesis.number of zeroes equals to number of numbers after dot that will remain after rounding up
+    }
 }
 
 
