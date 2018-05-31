@@ -313,19 +313,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                             try {
                                                 URL googleUrl = new URL(fullGoogleLink);
                                                 inputStreamFromGoogle = googleUrl.openStream();
-                                                Log.e("TEST", "TEST: " + myIndex);
                                                 BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
                                                 String currentLineFromGoogle;
                                                 String lineGoogle = " ";
                                                 //while loop stops when currentLine becomes null ,so we keep whole growing String  under line variable
                                                 while ((currentLineFromGoogle = googleBufferedReader.readLine()) != null) {
                                                     lineGoogle += currentLineFromGoogle;
-
-
                                                 }
 
                                                 Log.e("url", "url " + myIndex);
-
+                                                String latFromJson;
+                                                String lngFromJson;
                                                 //json parsing
                                                 try {
                                                     //JSON parsing
@@ -334,8 +332,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                                     JSONObject resultObject = jsonArrayResults.getJSONObject(0);
                                                     JSONObject geometryObject = resultObject.getJSONObject("geometry");
                                                     JSONObject locationObject = geometryObject.getJSONObject("location");
-                                                    String latFromJson;
-                                                    String lngFromJson;
+                                                Log.e("TEST", "TEST: " + myIndex);
+
                                                     if (locationObject != null) {
                                                         latFromJson = locationObject.getString("lat");
                                                         lngFromJson = locationObject.getString("lng");
@@ -367,9 +365,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                                     }
 
                                                 } catch (JSONException e) {
-                                                    e.printStackTrace();
-//                                                    googleLats.add("unknown");
-//                                                    googleLngs.add("unknown");
+                                                    latFromJson = "unknown";
+                                                    lngFromJson = "unknown";
+                                                    Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson,lngFromJson);
+                                                    allStations.add(station);
                                                     Log.e("JsonException", "JsonException" + myIndex);
 
                                                 }
