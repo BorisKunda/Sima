@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,41 +20,29 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.happytrees.fulltankparsing.Activities.FavouritesActivity;
-import com.happytrees.fulltankparsing.Activities.MainActivity;
 import com.happytrees.fulltankparsing.Activities.MyMapActivity;
 import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
-import com.squareup.picasso.Picasso;
 
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-    public ArrayList<Station> stations;
+    public List<Station> stations;
     public Context context;
     public double latFromMainActivity;// -> pass latitude  from main activity to adapter using adapter's constructor
     public double lngFromMainActivity;// -> pass longitude from main activity to adapter using adapter's constructor
     public float []  distanceResults = new float[10];//10 random number.you need any number higher than 3
 
-    public MyAdapter(ArrayList<Station> stations, Context context, double latFromMainActivity, double lngFromMainActivity) {
+    public MyAdapter(List<Station> stations, Context context, double latFromMainActivity, double lngFromMainActivity) {
         this.stations = stations;
         this.context = context;
         this.latFromMainActivity = latFromMainActivity;
         this.lngFromMainActivity = lngFromMainActivity;
     }
 
-    public MyAdapter(ArrayList<Station> stations, Context context) {
+    public MyAdapter(List<Station> stations, Context context) {
         this.stations = stations;
         this.context = context;
     }
