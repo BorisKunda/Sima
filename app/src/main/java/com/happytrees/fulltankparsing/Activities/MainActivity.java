@@ -48,8 +48,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 //when gps is turned off last known location is deleted
 
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final static String STRING3 = "&sort=cheapest";
 
     private final static int REQUEST_CODE_LOCATION = 1;
-    public List<Station> allStations = new Vector<>();
+    public ArrayList<Station> allStations = new ArrayList<>();
     public RecyclerView myRecycler;
     public EditText cityET;
     public Button goBtn;
@@ -242,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                                 //NAMES
                                 Elements myElements = parsedDocument.select("h2 > a");
-                                final List<String> names = new ArrayList<>();
+                                final ArrayList<String> names = new ArrayList<>();
                                 for (Element myElement : myElements) {
                                     //getting station's name
                                     String name = myElement.ownText();
@@ -255,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 //<div class=""><span class="search-data-num">6.37</span> ₪</div>
                                 //selecting prices from html
                                 Elements pricesElements = parsedDocument.select("span.search-data-num");
-                                final ArrayList<String> prices = new ArrayList<>();
+                                ArrayList<String> prices = new ArrayList<>();
                                 for (Element priceElement : pricesElements) {
                                     String price = priceElement.ownText();
                                     //keeping all prices under array of prices
@@ -271,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                  */
 
                                 Elements urlImages = parsedDocument.select("figure.search-figure>a>img");
-                                final ArrayList<String> urlImgs = new ArrayList<>();
+                                ArrayList<String> urlImgs = new ArrayList<>();
                                 for (Element urlElement : urlImages) {
                                     //getting value  --> ("src") <-- <img src="https://maps.googleapis.com/maps/api/streetview?size=260x150&location=31.749428,35.206287" >
                                     String urlImg = urlElement.attr("src");
@@ -286,20 +284,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 Log.e("app", "step 3");
 
 
-//                                final ArrayList<String> googleLats = new ArrayList<>();
-//                                final ArrayList<String> googleLngs = new ArrayList<>();
+                                final ArrayList<String> googleLats = new ArrayList<>();
+                                final ArrayList<String> googleLngs = new ArrayList<>();
                                 //https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+Ten&key=AIzaSyDo6e7ZL0HqkwaKN-GwKgqZnW03FhJNivQ
 
 
                                 for (int n = 0; n < names.size(); n++) {
                                     //run on array of names ,insert name into google link respectively
                                     /////////////////////////////////////////////////
-                                    final int myIndex = n;
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
+
                                             String googlePlacesStart = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+station+";
-                                            String googlePlaceName = names.get(myIndex);
+                                            String googlePlaceName = names.get(n);
                                             String googlePlaceNameFixed = googlePlaceName.replace(" ", "+");
                                             String googlePlacesStartEnd = "&key=AIzaSyAF4NBSxncxS_9ZHZk4kg3xUr6wtqIgJT4";
                                             String fullGoogleLink = googlePlacesStart + googlePlaceNameFixed + googlePlacesStartEnd;
@@ -313,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                             try {
                                                 URL googleUrl = new URL(fullGoogleLink);
                                                 inputStreamFromGoogle = googleUrl.openStream();
-                                                Log.e("TEST", "TEST: " + myIndex);
                                                 BufferedReader googleBufferedReader = new BufferedReader(new InputStreamReader(inputStreamFromGoogle));
                                                 String currentLineFromGoogle;
                                                 String lineGoogle = " ";
@@ -324,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                                                 }
 
-                                                Log.e("url", "url " + myIndex);
+                                                Log.e("url", "url " + n);
 
                                                 //json parsing
                                                 try {
@@ -334,43 +328,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                                     JSONObject resultObject = jsonArrayResults.getJSONObject(0);
                                                     JSONObject geometryObject = resultObject.getJSONObject("geometry");
                                                     JSONObject locationObject = geometryObject.getJSONObject("location");
-                                                    String latFromJson;
-                                                    String lngFromJson;
                                                     if (locationObject != null) {
-                                                        latFromJson = locationObject.getString("lat");
-                                                        lngFromJson = locationObject.getString("lng");
+                                                        String latFromJson = locationObject.getString("lat");
+                                                        String lngFromJson = locationObject.getString("lng");
+                                                        googleLats.add(latFromJson);
+                                                        googleLngs.add(lngFromJson);
                                                     } else {
-                                                        latFromJson = "unknown";
-                                                        lngFromJson = "unknown";
+                                                        googleLats.add("unknown");
+                                                        googleLngs.add("unknown");
                                                     }
-                                                    Station station = new Station(googlePlaceName, prices.get(myIndex * 3), prices.get((myIndex * 3) + 1), prices.get((myIndex * 3) + 2), urlImgs.get(myIndex), latFromJson,lngFromJson);
-                                                    allStations.add(station);
 
-                                                    Log.e("json", "json" + myIndex);
-                                                    Log.e("ALL STATIONS SIZE: ", "size: " + allStations.size());
-                                                    Log.e("ALL NAMES SIZE: ", "size: " + names.size());
+                                                    Log.e("json", "json" + n);
 
-
-                                                    if (allStations.size() == names.size()) {
-                                                        myRecycler.post(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                for (int i = allStations.size() - 1; i >= 0; i--) {
-                                                                    if (allStations.get(i).placeLat.contains("unknown")) {
-                                                                        allStations.remove(i);
-                                                                    }
-                                                                }
-                                                                myAdapter.notifyDataSetChanged();
-                                                                progressDialog.dismiss();//dismiss progress bar after call was completed
-                                                            }
-                                                        });
-                                                    }
+                                                    //    Log.e("Runnable" ," lat " +  locationObject.get("lat") + " lng " +  locationObject.get("lng") );
 
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
-//                                                    googleLats.add("unknown");
-//                                                    googleLngs.add("unknown");
-                                                    Log.e("JsonException", "JsonException" + myIndex);
+                                                    googleLats.add("unknown");
+                                                    googleLngs.add("unknown");
+                                                    Log.e("JsonException", "JsonException" +n);
 
                                                 }
 
@@ -390,13 +366,52 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                                 }
 
                                             }
-                                         Log.e("T","T  " + myIndex);
-                                        }
-                                    }).start();
+                                         Log.e("T","T  " + n);
+
+
+
+
                                 }
 
-//                                Log.e("arraylat", "arraylat" + googleLats);
-//                                Log.e("arraylat", "arraylat" + googleLngs);
+                                Log.e("arraylat", "arraylat" + googleLats);
+                                Log.e("arraylat", "arraylat" + googleLngs);
+
+                            /*       for(int l =0 ; l < googleLats.size();l++) {
+                                    Log.e("g","g  " + l + " " + googleLats.get(l));
+                             }   */
+
+                            /*    for(int l =0 ; l < googleLngs.size();l++) {
+
+                                } */
+
+                            //if both googleLats and googleLngs have size 25 then all inner Runnables completed their work
+                                //LOOP OF CREATING OBJECTS
+                                for (int i = 0; i < names.size(); i++) {
+                                    Station station = new Station(names.get(i), prices.get(i * 3), prices.get((i * 3) + 1), prices.get((i * 3) + 2), urlImgs.get(i), googleLats.get(i), googleLngs.get(i));
+                                    allStations.add(station);
+
+
+                                    if(allStations.size()==25) {
+
+                                        myRecycler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                for (int i = allStations.size() - 1; i >= 0; i--) {
+                                                    if (allStations.get(i).placeLat.contains("unknown")) {
+                                                        allStations.remove(i);
+                                                    }
+                                                }
+                                                myAdapter.notifyDataSetChanged();
+                                                progressDialog.dismiss();//dismiss progress bar after call was completed
+                                            }
+                                        });
+
+
+                                    }
+
+                                }
+
+
 
                             } catch (MalformedURLException mue) {
                                 mue.printStackTrace();
