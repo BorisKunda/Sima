@@ -25,17 +25,18 @@ import com.happytrees.fulltankparsing.Objects.Station;
 import com.happytrees.fulltankparsing.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyFAdapter extends RecyclerView.Adapter<MyFAdapter.MyFViewHolder> {
 
-    public ArrayList<Station> fStations;
+    public List<Station> fStations;
     public Context fContext;
     public String fLatFromFavActivity;// -> pass latitude  from main activity to adapter using adapter's constructor
     public String fLngFromFavActivity;// -> pass longitude from main activity to adapter using adapter's constructor
     public float []  fDistanceResults = new float[10];//10 random number.you need any number higher than 3
 
 
-    public MyFAdapter(ArrayList<Station> fStations, Context fContext, String fLatFromFavActivity, String fLngFromFavActivity) {
+    public MyFAdapter(List<Station> fStations, Context fContext, String fLatFromFavActivity, String fLngFromFavActivity) {
         this.fStations = fStations;
         this.fContext = fContext;
         this.fLatFromFavActivity = fLatFromFavActivity;

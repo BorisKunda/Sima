@@ -45,7 +45,7 @@ public class FavouritesActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(FavouritesActivity.this);//layout manager defines look of RecyclerView -- > grid,list
         recyclerView.setLayoutManager(layoutManager);
         //adapter
-        final MyFAdapter myFAdapter = new MyFAdapter((ArrayList<Station>) allFavourites,FavouritesActivity.this,latPassedFromMain,lngPassedFromMain);
+        final MyFAdapter myFAdapter = new MyFAdapter((List<Station>) allFavourites,FavouritesActivity.this,latPassedFromMain,lngPassedFromMain);
         recyclerView.setAdapter(myFAdapter);
 
 
